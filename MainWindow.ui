@@ -1,24 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1082</width>
+    <height>722</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QListView" name="liste">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="textSearch">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonSearch">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Suchen</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1082</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuNotenarchiv">
+    <property name="title">
+     <string>Notenarchiv</string>
+    </property>
+    <addaction name="menuQuit"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Hilfe</string>
+    </property>
+    <addaction name="menuAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuDatenbank">
+    <property name="title">
+     <string>Datenbank</string>
+    </property>
+    <widget class="QMenu" name="menuExportAs">
+     <property name="title">
+      <string>Daten exportieren</string>
+     </property>
+     <addaction name="menuExportAsSQL"/>
+     <addaction name="menuExportAsCSV"/>
+     <addaction name="menuExportAsXML"/>
+    </widget>
+    <addaction name="menuBackup"/>
+    <addaction name="menuRestore"/>
+    <addaction name="separator"/>
+    <addaction name="menuExportAs"/>
+   </widget>
+   <addaction name="menuNotenarchiv"/>
+   <addaction name="menuDatenbank"/>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="menuQuit">
+   <property name="text">
+    <string>Beenden</string>
+   </property>
+  </action>
+  <action name="menuAbout">
+   <property name="text">
+    <string>Über Notenarchiv</string>
+   </property>
+  </action>
+  <action name="menuBackup">
+   <property name="text">
+    <string>Sichern</string>
+   </property>
+  </action>
+  <action name="menuRestore">
+   <property name="text">
+    <string>Wiederherstellen</string>
+   </property>
+  </action>
+  <action name="menuExportAsSQL">
+   <property name="text">
+    <string>Als SQL (*.sql)</string>
+   </property>
+  </action>
+  <action name="menuExportAsCSV">
+   <property name="text">
+    <string>Als CSV (*.csv)</string>
+   </property>
+  </action>
+  <action name="menuExportAsXML">
+   <property name="text">
+    <string>Als XML (*.xml)</string>
+   </property>
+  </action>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>
