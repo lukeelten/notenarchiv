@@ -4,17 +4,41 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Notenarchiv
 TEMPLATE = app
 
+CONFIG += c++11
+
 
 SOURCES += main.cpp\
-        MainWindow.cpp
+        MainWindow.cpp \
+    AboutDialog.cpp \
+    Database.cpp \
+    Logfile.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    AboutDialog.h \
+    Database.h \
+    Singleton.h \
+    Logfile.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    AboutDialog.ui
+
+RESOURCES += \
+    Icons.qrc
+
+OTHER_FILES += \
+    Icons/Add.png \
+    Icons/Check.png \
+    Icons/Delete.png \
+    Icons/Download.png \
+    Icons/Exit.png \
+    Icons/Save.png \
+    Icons/Search.png \
+    Icons/icon.gif \
+    Notenarchiv.sqlite

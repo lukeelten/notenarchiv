@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="add">Icons/Add.png</file>
+        <file alias="check">Icons/Check.png</file>
+        <file alias="delete">Icons/Delete.png</file>
+        <file alias="download">Icons/Download.png</file>
+        <file alias="exit">Icons/Exit.png</file>
+        <file alias="save">Icons/Save.png</file>
+        <file alias="search">Icons/Search.png</file>
+        <file>Icons/icon.gif</file>
+    </qresource>
+</RCC>
