@@ -34,6 +34,8 @@ public:
     QStringList GetTables() const { return m_db.tables(); }
 
 private:
+    void InitTables();
+
     QSqlDatabase m_db;
 
     static const QString DRIVER;

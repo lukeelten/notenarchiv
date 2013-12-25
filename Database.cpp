@@ -22,7 +22,10 @@ Database::Database() {
     m_db.open();
 
     if (m_db.lastError().isValid())
-        qDebug() << "Database: " << m_db.lastError();
+        qCritical() << "Database: " << m_db.lastError();
+
+    QSqlQuery query("", m_db);
+
 }
 
 Database::~Database() {
