@@ -1,6 +1,9 @@
 #include "MainWindow.h"
 #include <QApplication>
 
+#include "Logfile.h"
+#include "Database.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -12,5 +15,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    return a.exec();
+    int ret = a.exec();
+
+    Log->Del();
+    DB->Del();
+
+    return ret;
 }

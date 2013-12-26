@@ -32,6 +32,7 @@ public:
     QSqlQuery Query(const QString& query) { return std::move(QSqlQuery(query, m_db)); }
 
     QStringList GetTables() const { return m_db.tables(); }
+    QSqlDatabase GetDatabase() { return m_db; }
 
 private:
     void InitTables();

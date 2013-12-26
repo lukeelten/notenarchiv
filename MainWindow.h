@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QModelIndex>
+
+class QSqlTableModel;
 
 namespace Ui {
 class MainWindow;
@@ -23,9 +26,12 @@ public slots:
     bool SaveCurrent();
     bool SaveAll();
 
+    void ItemChanged(QModelIndex index);
+
 private:
     Ui::MainWindow *ui;
     bool m_changed;
+    QSqlTableModel *m_model;
 };
 
 #endif // MAINWINDOW_H

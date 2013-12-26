@@ -2,6 +2,7 @@
 #include <QString>
 #include <QDir>
 #include <QDebug>
+#include <QFile>
 #include <utility>
 
 #include "Database.h"
@@ -16,19 +17,28 @@ Database::Database() {
     //QString path = QDir::currentPath();
     //path.append(QDir::separator()).append(Database::FILENAME);
     //m_db.setDatabaseName(path);
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName("Notenarchiv.sqlite");
+
+    qDebug() << "Pfad: " << QDir::currentPath();
+
+    m_db = QSqlDatabase::addDatabase(Database::DRIVER);
+    m_db.setDatabaseName(Database::FILENAME);
+
+    if (QFile::exists(Database::FILENAME))
+        qDebug() << "Datenbank existiert";
+    else
+        qDebug() << "Datenbank fehlt";
 
     m_db.open();
 
     if (m_db.lastError().isValid())
-        qCritical() << "Database: " << m_db.lastError();
-
-    QSqlQuery query("", m_db);
+        qDebug() << "Database: " << m_db.lastError();
 
 }
 
 Database::~Database() {
     if (m_db.isOpen())
         m_db.close();
+}
+
+void Database::InitTables() {
 }
