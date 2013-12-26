@@ -11,6 +11,7 @@
 const QString Database::FILENAME = "Notenarchiv.sqlite";
 const QString Database::DRIVER = "QSQLITE";
 
+//#define CONSOLE( msg ) qDebug() << __func__ << msg;
 
 Database::Database() {
     //m_db = QSqlDatabase::addDatabase(Database::DRIVER);
@@ -31,7 +32,18 @@ Database::Database() {
     m_db.open();
 
     if (m_db.lastError().isValid())
-        qDebug() << "Database: " << m_db.lastError();
+        qDebug() << __func__ << m_db.lastError();
+    
+    
+    QSqlQuery q(m_db);
+    q.exec("SELECT id FROM notenarchiv LIMIT 1");
+    
+    if (q.lastError().isValid())
+        InitNotenarchiv();
+    
+    q.exec("SELECT id FROM log LIMIT 1");
+    if (q.lastError().isValid())
+        InitLog();
 
 }
 
@@ -40,5 +52,24 @@ Database::~Database() {
         m_db.close();
 }
 
-void Database::InitTables() {
+void Database::InitNotenarchiv() {
+    QSqlQuery q("", m_db); // Create notenarchiv
+    
+    if (q.lastError().isValid()) {
+        qDebug() << __func__ << q.lastError();
+    }
+    
+    qDebug() << __func__;
+}
+
+void Database::InitLog() {
+    QSqlQuery q("", m_db); // Create log
+    
+    if (q.lastError().isValid()) {
+        qDebug() << __func__ << q.lastError();
+        return;
+    }
+    
+    qDebug() << __func__;
+
 }

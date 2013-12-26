@@ -35,7 +35,8 @@ public:
     QSqlDatabase GetDatabase() { return m_db; }
 
 private:
-    void InitTables();
+    void InitNotenarchiv();
+    void InitLog();
 
     QSqlDatabase m_db;
 
