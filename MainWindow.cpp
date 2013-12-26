@@ -25,13 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->toolbarSave, SIGNAL(triggered()), this, SLOT(SaveCurrent()));
     connect(ui->liste, SIGNAL(clicked(QModelIndex)), this, SLOT(ItemChanged(QModelIndex)));
 
-    //
-    QSqlQuery q = DB->Query("SELECT * FROM notenarchiv");
-    if (q.lastError().isValid())
-        qDebug() << "MainWindow Konstruktor: " << q.lastError();
-
-    qDebug() << "Num Rows: " << q.numRowsAffected();
-
     // Model laden
     m_model->setTable("notenarchiv");
     m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);

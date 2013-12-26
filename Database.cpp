@@ -53,7 +53,7 @@ Database::~Database() {
 }
 
 void Database::InitNotenarchiv() {
-    QSqlQuery q("", m_db); // Create notenarchiv
+    QSqlQuery q("CREATE TABLE \"notenarchiv\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"name\" VARCHAR, \"komponist\" VARCHAR, \"richtung\" VARCHAR, \"bemerkung\" TEXT, \"fach\" VARCHAR)", m_db); // Create notenarchiv
     
     if (q.lastError().isValid()) {
         qDebug() << __func__ << q.lastError();
@@ -63,7 +63,7 @@ void Database::InitNotenarchiv() {
 }
 
 void Database::InitLog() {
-    QSqlQuery q("", m_db); // Create log
+    QSqlQuery q("CREATE TABLE \"log\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"msg\" TEXT, \"level\" VARCHAR NOT NULL  DEFAULT info, \"time\" DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP)", m_db); // Create log
     
     if (q.lastError().isValid()) {
         qDebug() << __func__ << q.lastError();
