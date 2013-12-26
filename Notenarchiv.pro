@@ -18,13 +18,15 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     AboutDialog.cpp \
     Database.cpp \
-    Logfile.cpp
+    Logfile.cpp \
+    Eintrag.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
     Database.h \
     Singleton.h \
-    Logfile.h
+    Logfile.h \
+    Eintrag.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui

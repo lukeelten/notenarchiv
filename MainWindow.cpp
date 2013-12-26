@@ -4,6 +4,7 @@
 #include <QModelIndex>
 #include <QSqlRecord>
 #include <QDebug>
+#include <QTime>
 
 #include "AboutDialog.h"
 #include "Database.h"
@@ -15,40 +16,23 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_changed(false),
-    m_model(new QSqlTableModel(this, DB->GetDatabase()))
+    m_changed(false)
 {
+    QTime t = QTime::currentTime();
     ui->setupUi(this);
 
     // Manuelle konnektierungen
     connect(ui->menuAbout, SIGNAL(triggered()), this, SLOT(ShowAbout()));
     connect(ui->toolbarSave, SIGNAL(triggered()), this, SLOT(SaveCurrent()));
-    connect(ui->liste, SIGNAL(clicked(QModelIndex)), this, SLOT(ItemChanged(QModelIndex)));
+    connect(ui->liste, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(ItemChanged(QListWidgetItem*)));
 
-    // Model laden
-    m_model->setTable("notenarchiv");
-    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_model->setFilter("");
-    m_model->setSort(1, Qt::AscendingOrder);
+    LoadItems();
 
-    m_model->select();
-    m_model->setHeaderData(0, Qt::Horizontal, "ID", Qt::UserRole);
-    m_model->setHeaderData(1, Qt::Horizontal, "Name");
-    m_model->setHeaderData(2, Qt::Horizontal, "Komponist");
-    m_model->setHeaderData(3, Qt::Horizontal, "Musikrichtung");
-    m_model->setHeaderData(4, Qt::Horizontal, "Bemerkung");
-    m_model->setHeaderData(5, Qt::Horizontal, "Fach-Nr.:");
-
-    ui->liste->setModel(m_model);
-    ui->liste->setModelColumn(1);
-    ui->liste->show();
-
+    qDebug() << "Time Elapsed: " << t.elapsed();
 }
 
 MainWindow::~MainWindow()
 {
-    delete m_model;
-
     delete ui;
 }
 
@@ -115,13 +99,55 @@ bool MainWindow::SaveCurrent() {
     return true;
 }
 
-void MainWindow::ItemChanged(QModelIndex index) {
-    qDebug() << "Entered ItemChanged";
-    QSqlRecord rec = m_model->record(index.row());
+void MainWindow::ItemChanged(QListWidgetItem* item) {
+    if (!m_items.contains(item)) {
+        qDebug() << __func__ << " Unknown item";
+        return;
+    }
 
-    ui->textName->setText(rec.value("name").toString());
-    ui->textNumber->setText(rec.value("fach").toString());
-    ui->textWriter->setText(rec.value("komponist").toString());
-    ui->textStyle->setText(rec.value("richtung").toString());
-    ui->textComment->setPlainText(rec.value("bemerkung").toString());
+    ui->textName->setText(m_items[item].GetName());
+    ui->textNumber->setText(m_items[item].GetFach());
+    ui->textComment->setPlainText(m_items[item].GetComment());
+    ui->textStyle->setText(m_items[item].GetStyle());
+    ui->textWriter->setText(m_items[item].GetWriter());
+}
+
+void MainWindow::LoadItems() {
+
+    QSqlTableModel* model = new QSqlTableModel(this, DB->GetDatabase());
+
+    model->setTable("notenarchiv");
+    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model->setSort(1, Qt::AscendingOrder);
+    model->select();
+
+    if (model->lastError().isValid()) {
+        qDebug() << __func__ << " : " << model->lastError();
+        return;
+    }
+
+    QListWidgetItem* item = nullptr;
+    int numrows = model->rowCount();
+    QSqlRecord record;
+
+    for (int i = 0; i < numrows; i++) {
+        record = model->record(i);
+
+        if (record.isEmpty())
+            break;
+
+        item = new QListWidgetItem(record.value("name").toString(), ui->liste);
+
+        Eintrag noten(record);
+        m_items.insert(item, std::move(noten));
+
+        if (i == 0)
+            ItemChanged(item);
+
+        item = nullptr;
+    }
+
+    qDebug() << __func__ << " : " << model->query().lastQuery();
+
+    delete model;
 }

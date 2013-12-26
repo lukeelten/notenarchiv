@@ -2,9 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QModelIndex>
+#include <QListWidgetItem>
+#include <QHash>
 
-class QSqlTableModel;
+#include "Eintrag.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,18 +21,21 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *);
+    void LoadItems();
 
 public slots:
     void ShowAbout();
     bool SaveCurrent();
     bool SaveAll();
 
-    void ItemChanged(QModelIndex index);
+    void ItemChanged(QListWidgetItem* item);
 
 private:
     Ui::MainWindow *ui;
     bool m_changed;
-    QSqlTableModel *m_model;
+
+    QHash<QListWidgetItem*, Eintrag> m_items;
+
 };
 
 #endif // MAINWINDOW_H
