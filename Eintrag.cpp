@@ -35,3 +35,12 @@ QString Eintrag::GetQueryString() const {
     return std::move(q);
 }
 
+QString Eintrag::GetDeleteQuery() const {
+    if (m_new)
+        return QString();
+
+    QString q =  "DELETE FROM notenarchiv WHERE id = ";
+    q.append(QVariant(m_id).toString());
+
+    return std::move(q);
+}

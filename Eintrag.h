@@ -40,6 +40,7 @@ public:
     void Saved() { m_changed = true; }
 
     QString GetQueryString() const;
+    QString GetDeleteQuery() const;
 
 private:
     int m_id;

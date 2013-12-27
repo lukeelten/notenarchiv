@@ -26,7 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Manuelle konnektierungen
     connect(ui->menuAbout, SIGNAL(triggered()), this, SLOT(ShowAbout()));
     connect(ui->toolbarSave, SIGNAL(triggered()), this, SLOT(SaveAll()));
-    connect(ui->liste, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(ItemChanged(QListWidgetItem*)));
+    connect(ui->toolbarDelete, SIGNAL(triggered()), this, SLOT(ItemDelete()));
+    //connect(ui->liste, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(ItemChanged(QListWidgetItem*)));
+    connect(ui->liste, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(CurrentItemChanged(QListWidgetItem*,QListWidgetItem*)));
     connect(ui->textName, SIGNAL(textEdited(QString)), this, SLOT(NameChanged(QString)));
     connect(ui->textNumber, SIGNAL(textEdited(QString)), this, SLOT(NumberChanged(QString)));
     connect(ui->textStyle, SIGNAL(textEdited(QString)), this, SLOT(StyleChanged(QString)));
@@ -116,7 +118,7 @@ bool MainWindow::SaveAll() {
         iter.value().Saved();
 
         QFont f = iter.key()->font();
-        f.setStyle(QFont::StyleNormal);
+        f.setItalic(false);
         iter.key()->setFont(f);
         iter.key()->setText(iter.value().GetName());
 
@@ -257,7 +259,7 @@ void MainWindow::ChangeItemStyle(QListWidgetItem *item, bool anywhere) {
     if (!m_items[item].IsChanged() || anywhere) {
         item->setText(item->text() + " *");
         QFont font = item->font();
-        font.setStyle(QFont::StyleItalic);
+        font.setItalic(true);
         item->setFont(font);
     }
 }
@@ -273,4 +275,36 @@ void MainWindow::Add() {
     ui->liste->setCurrentItem(item);
     ItemChanged(item);
     ChangeItemStyle(item, true);
+}
+
+void MainWindow::ItemDelete() {
+    QListWidgetItem* current = ui->liste->currentItem();
+
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Question);
+    msg.setText("Löschen bestätigen");
+    msg.setInformativeText("Möchten Sie den Eintrag " + m_items[current].GetName() + " wirklich löschen?");
+    msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+    int ret = msg.exec();
+
+    if (ret == QMessageBox::No)
+        return;
+
+    if (!m_items[current].GetDeleteQuery().isEmpty()) {
+        auto q = DB->GetEmptyQuery();
+        qDebug() << __func__ << " : " << "SQL-Query: " << m_items[current].GetDeleteQuery();
+        q.exec(m_items[current].GetDeleteQuery());
+
+        if (q.lastError().isValid()) {
+            qDebug() << __func__ << " : " << q.lastError();
+            return;
+        }
+    }
+
+    m_items.remove(current);
+    ui->liste->removeItemWidget(current);
+
+    if(current)
+        delete current; // Bin nicht sicher ob ich das darf
 }

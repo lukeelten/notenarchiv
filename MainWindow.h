@@ -30,11 +30,14 @@ public slots:
     void Add();
 
     void ItemChanged(QListWidgetItem* item);
+    void CurrentItemChanged(QListWidgetItem* item, QListWidgetItem* ) { ItemChanged(item); }
     void CommentChanged();
     void NameChanged(const QString& );
     void NumberChanged(const QString& );
     void StyleChanged(const QString& );
     void WriterChanged(const QString& );
+
+    void ItemDelete();
 
 private:
     Ui::MainWindow *ui;
