@@ -153,6 +153,7 @@ void MainWindow::LoadItems() {
 
     if (model->lastError().isValid()) {
         qDebug() << __func__ << " : " << model->lastError();
+        delete model;
         return;
     }
 

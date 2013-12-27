@@ -1,4 +1,5 @@
 #include <QSqlRecord>
+#include <QSqlTableModel>
 #include <QString>
 #include <QVariant>
 #include <QTableWidget>
@@ -8,12 +9,16 @@
 #include <utility>
 
 #include "Eintrag.h"
+#include "Database.h"
 
 Eintrag::Eintrag() : m_id(-1), m_fach(), m_name(), m_writer(), m_style(), m_comment(), m_new(true), m_changed(false) {
+    LoadFiles();
 }
 
 Eintrag::Eintrag(const int id, const QString &name, const QString &writer, const QString &style, const QString &comment, const QString& fach) : m_id(id),
-    m_fach(fach), m_name(name), m_writer(writer), m_style(style), m_comment(comment), m_new(false), m_changed(false) {
+    m_fach(fach), m_name(name), m_writer(writer), m_style(style), m_comment(comment), m_new(false), m_changed(false)
+{
+    LoadFiles();
 }
 
 Eintrag::Eintrag(const QSqlRecord& rec) : m_id(rec.value("id").toInt()),
@@ -23,7 +28,9 @@ Eintrag::Eintrag(const QSqlRecord& rec) : m_id(rec.value("id").toInt()),
     m_style(rec.value("richtung").toString()),
     m_comment(rec.value("bemerkung").toString()),
     m_new(false),
-    m_changed(false) {
+    m_changed(false)
+{
+    LoadFiles();
 }
 
 QString Eintrag::GetQueryString() const {
@@ -68,7 +75,8 @@ void Eintrag::ShowFiles(QTableWidget *table) {
 void Eintrag::GenerateItems(QTableWidget *table) {
     QTime t = QTime::currentTime();
 
-    table->clear(); // Sicherstellen das TableWidget nicht auf die zu zerstörenden Items zugreift
+    if (table)
+        table->clear(); // Sicherstellen das TableWidget nicht auf die zu zerstörenden Items zugreift
     Delete();
 
     QTableWidgetItem* item = nullptr;
@@ -110,4 +118,38 @@ void Eintrag::Delete() {
         }
         m_items.clear();
     }
+}
+
+void Eintrag::LoadFiles() {
+    QSqlTableModel *model = new QSqlTableModel(nullptr, DB->GetDatabase());
+
+    model->setTable("files");
+    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model->setFilter("noten_id = " + QVariant(m_id).toString());
+    model->setSort(2, Qt::AscendingOrder);
+    model->select();
+
+    if (model->lastError().isValid()) {
+        qDebug() << __func__ << " : " << model->lastError();
+        delete model;
+        return;
+    }
+    if (model->rowCount() == 0) {
+        delete model;
+        return;
+    }
+
+    QSqlRecord rec;
+    int rows = model->rowCount();
+
+    for (int i = 0; i < rows; i++) {
+        rec = model->record(i);
+
+        if (rec.isEmpty())
+            break;
+
+        File f(rec);
+        m_files.insert(i, std::move(f));
+    }
+
 }

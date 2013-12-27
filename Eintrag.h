@@ -42,8 +42,6 @@ public:
 
     void Saved() { m_changed = false; m_new = false; }
 
-    File* GetFile() { return &m_files[item]; }
-
     void ShowFiles(QTableWidget* table);
     void GenerateItems(QTableWidget* table);
 
@@ -52,6 +50,8 @@ public:
     void Delete();
 
 private:
+    void LoadFiles();
+
     int m_id;
     QString m_fach,m_name, m_writer, m_style, m_comment;
 
