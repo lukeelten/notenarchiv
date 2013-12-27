@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_changed(false)
 {
+    QTime t = QTime::currentTime();
+
     ui->setupUi(this);
 
     // Manuelle konnektierungen
@@ -33,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->toolbarNew, SIGNAL(triggered()), this, SLOT(Add()));
 
     LoadItems();
+
+    qDebug() << "Time for construction: " << t.elapsed();
 }
 
 MainWindow::~MainWindow()
