@@ -25,14 +25,12 @@ Eintrag::Eintrag(const QSqlRecord& rec) : m_id(rec.value("id").toInt()),
 QString Eintrag::GetQueryString() const {
     QString q;
 
-    if (m_new)
-        q = "INSERT INTO notenarchiv (name, komponist, richtung, bemerkung, fach) VALUES (\"%1\", \"%2\", \"%3\", \"%4\", \"%5\")";
-    else {
-        q = "UPDATE notenarchiv SET name = \"%1\", komponist = \"%2\", richtung = \"%3\", bemerkung = \"%4\", fach = \"%5\" WHERE id = ";
+    if (m_new) {
+        q = "INSERT INTO notenarchiv (name, komponist, richtung, bemerkung, fach) VALUES (\"" + m_name + "\", \"" + m_writer + "\", \"" + m_style + "\", \"" + m_comment + "\", \"" + m_fach + "\")";
+    } else {
+        q = "UPDATE notenarchiv SET name = \"" + m_name + "\", komponist = \"" + m_writer + "\", richtung = \"" + m_style + "\", bemerkung = \"" + m_comment + "\", fach = \"" + m_fach + "\" WHERE id = ";
         q.append(QVariant(m_id).toString());
     }
-
-    q.arg(m_name, m_writer, m_style, m_comment, m_fach);
 
     return std::move(q);
 }

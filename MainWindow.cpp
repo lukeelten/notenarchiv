@@ -9,6 +9,7 @@
 #include "AboutDialog.h"
 #include "Database.h"
 #include "Logfile.h"
+#include "Eintrag.h"
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -18,17 +19,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_changed(false)
 {
-    QTime t = QTime::currentTime();
     ui->setupUi(this);
 
     // Manuelle konnektierungen
     connect(ui->menuAbout, SIGNAL(triggered()), this, SLOT(ShowAbout()));
-    connect(ui->toolbarSave, SIGNAL(triggered()), this, SLOT(SaveCurrent()));
+    connect(ui->toolbarSave, SIGNAL(triggered()), this, SLOT(SaveAll()));
     connect(ui->liste, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(ItemChanged(QListWidgetItem*)));
+    connect(ui->textName, SIGNAL(textEdited(QString)), this, SLOT(NameChanged(QString)));
+    connect(ui->textNumber, SIGNAL(textEdited(QString)), this, SLOT(NumberChanged(QString)));
+    connect(ui->textStyle, SIGNAL(textEdited(QString)), this, SLOT(StyleChanged(QString)));
+    connect(ui->textWriter, SIGNAL(textEdited(QString)), this, SLOT(WriterChanged(QString)));
+    connect(ui->textComment, SIGNAL(textChanged()), this, SLOT(CommentChanged()));
+    connect(ui->toolbarNew, SIGNAL(triggered()), this, SLOT(Add()));
 
     LoadItems();
-
-    qDebug() << "Time Elapsed: " << t.elapsed();
 }
 
 MainWindow::~MainWindow()
@@ -91,11 +95,30 @@ void MainWindow::closeEvent(QCloseEvent * event) {
 }
 
 bool MainWindow::SaveAll() {
+    auto iter = m_items.begin();
+    QSqlQuery q = DB->GetEmptyQuery();
 
-    return true;
-}
+    for (;iter != m_items.end(); iter++) {
+        if (!iter.value().IsChanged())
+            continue;
 
-bool MainWindow::SaveCurrent() {
+        q.exec(iter.value().GetQueryString());
+
+        if (q.lastError().isValid()) {
+            qDebug() << __func__ << " : " << q.lastError();
+            return false;
+        }
+
+        iter.value().Saved();
+
+        QFont f = iter.key()->font();
+        f.setStyle(QFont::StyleNormal);
+        iter.key()->setFont(f);
+        iter.key()->setText(iter.value().GetName());
+
+    }
+
+    m_changed = false;
     return true;
 }
 
@@ -147,7 +170,103 @@ void MainWindow::LoadItems() {
         item = nullptr;
     }
 
-    qDebug() << __func__ << " : " << model->query().lastQuery();
-
     delete model;
+}
+
+void MainWindow::CommentChanged() {
+    QListWidgetItem* current = ui->liste->currentItem();
+
+    if (!current)
+        return;
+
+    if (m_items[current].GetComment() == ui->textComment->toPlainText())
+        return;
+
+    ChangeItemStyle(current);
+
+    m_items[current].SetComment(ui->textComment->toPlainText());
+    m_changed = true;
+}
+
+void MainWindow::NameChanged(const QString &) {
+    QListWidgetItem* current = ui->liste->currentItem();
+
+    if (!current)
+        return;
+
+    if (m_items[current].GetName() == ui->textName->text())
+        return;
+
+    m_items[current].SetName(ui->textName->text());
+    current->setText(ui->textName->text());
+    ChangeItemStyle(current, true);
+
+    m_changed = true;
+}
+
+void MainWindow::NumberChanged(const QString &) {
+    QListWidgetItem* current = ui->liste->currentItem();
+
+    if (!current)
+        return;
+
+    if (m_items[current].GetFach() == ui->textNumber->text())
+        return;
+
+    ChangeItemStyle(current);
+
+    m_items[current].SetFach(ui->textNumber->text());
+    m_changed = true;
+}
+
+void MainWindow::StyleChanged(const QString &) {
+    QListWidgetItem* current = ui->liste->currentItem();
+
+    if (!current)
+        return;
+
+    if (m_items[current].GetStyle() == ui->textStyle->text())
+        return;
+
+    ChangeItemStyle(current);
+
+    m_items[current].SetStyle(ui->textStyle->text());
+    m_changed = true;
+}
+
+void MainWindow::WriterChanged(const QString &) {
+    QListWidgetItem* current = ui->liste->currentItem();
+
+    if (!current)
+        return;
+
+    if (m_items[current].GetWriter() == ui->textWriter->text())
+        return;
+
+    ChangeItemStyle(current);
+
+    m_items[current].SetWriter(ui->textWriter->text());
+    m_changed = true;
+}
+
+void MainWindow::ChangeItemStyle(QListWidgetItem *item, bool anywhere) {
+    if (!m_items[item].IsChanged() || anywhere) {
+        item->setText(item->text() + " *");
+        QFont font = item->font();
+        font.setStyle(QFont::StyleItalic);
+        item->setFont(font);
+    }
+}
+
+void MainWindow::Add() {
+    QListWidgetItem* item = new QListWidgetItem("Neuer Eintrag", ui->liste);
+
+    Eintrag e;
+    e.SetName("Neuer Eintrag");
+
+    m_items.insert(item, e);
+
+    ui->liste->setCurrentItem(item);
+    ItemChanged(item);
+    ChangeItemStyle(item, true);
 }

@@ -22,13 +22,19 @@ public:
 protected:
     void closeEvent(QCloseEvent *);
     void LoadItems();
+    void ChangeItemStyle(QListWidgetItem* item, bool anywhere = false);
 
 public slots:
     void ShowAbout();
-    bool SaveCurrent();
     bool SaveAll();
+    void Add();
 
     void ItemChanged(QListWidgetItem* item);
+    void CommentChanged();
+    void NameChanged(const QString& );
+    void NumberChanged(const QString& );
+    void StyleChanged(const QString& );
+    void WriterChanged(const QString& );
 
 private:
     Ui::MainWindow *ui;

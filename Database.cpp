@@ -14,20 +14,8 @@ const QString Database::DRIVER = "QSQLITE";
 //#define CONSOLE( msg ) qDebug() << __func__ << msg;
 
 Database::Database() {
-    //m_db = QSqlDatabase::addDatabase(Database::DRIVER);
-    //QString path = QDir::currentPath();
-    //path.append(QDir::separator()).append(Database::FILENAME);
-    //m_db.setDatabaseName(path);
-
-    qDebug() << "Pfad: " << QDir::currentPath();
-
     m_db = QSqlDatabase::addDatabase(Database::DRIVER);
     m_db.setDatabaseName(Database::FILENAME);
-
-    if (QFile::exists(Database::FILENAME))
-        qDebug() << "Datenbank existiert";
-    else
-        qDebug() << "Datenbank fehlt";
 
     m_db.open();
 

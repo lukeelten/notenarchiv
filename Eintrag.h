@@ -37,6 +37,8 @@ public:
     bool IsChanged() const { return m_changed; }
     bool IsNew() const { return m_new; }
 
+    void Saved() { m_changed = true; }
+
     QString GetQueryString() const;
 
 private:
