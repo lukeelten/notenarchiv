@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QHash>
+#include <QDebug>
 
 #include "Eintrag.h"
 
@@ -38,6 +39,8 @@ public slots:
     void WriterChanged(const QString& );
 
     void ItemDelete();
+
+    void FileTableChanged(QTableWidgetItem* current, QTableWidgetItem* ) { qDebug() << __func__ << " : " << current; }
 
 private:
     Ui::MainWindow *ui;

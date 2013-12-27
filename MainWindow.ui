@@ -208,46 +208,6 @@
           </item>
          </layout>
         </item>
-        <item row="4" column="1">
-         <widget class="QTableWidget" name="files">
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="sortingEnabled">
-           <bool>true</bool>
-          </property>
-          <attribute name="horizontalHeaderCascadingSectionResizes">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>120</number>
-          </attribute>
-          <attribute name="verticalHeaderCascadingSectionResizes">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Instrument</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Stimme</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Datei</string>
-           </property>
-          </column>
-         </widget>
-        </item>
         <item row="4" column="0">
          <widget class="QLabel" name="label_5">
           <property name="text">
@@ -286,6 +246,49 @@
           </item>
          </layout>
         </item>
+        <item row="4" column="1">
+         <widget class="QTableWidget" name="files">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <attribute name="horizontalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>120</number>
+          </attribute>
+          <attribute name="verticalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Instrument</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Stimme</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Datei</string>
+           </property>
+          </column>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
@@ -298,7 +301,7 @@
      <x>0</x>
      <y>0</y>
      <width>805</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuNotenarchiv">

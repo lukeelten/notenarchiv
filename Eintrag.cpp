@@ -1,6 +1,10 @@
 #include <QSqlRecord>
 #include <QString>
 #include <QVariant>
+#include <QTableWidget>
+#include <QFileInfo>
+#include <QTableWidgetItem>
+#include <QTime>
 #include <utility>
 
 #include "Eintrag.h"
@@ -43,4 +47,67 @@ QString Eintrag::GetDeleteQuery() const {
     q.append(QVariant(m_id).toString());
 
     return std::move(q);
+}
+
+void Eintrag::ShowFiles(QTableWidget *table) {
+    table->clear();
+    table->setRowCount(m_items.size());
+
+    if (m_items.size() <= 0 || m_items.isEmpty())
+        return;
+
+    for (auto row = m_items.begin(); row != m_items.end(); row++) {
+        for (auto column = row.value().begin(); column != row.value().end(); column++) {
+
+            table->setItem(row.key(), column.key(), column.value());
+
+        }
+    }
+}
+
+void Eintrag::GenerateItems(QTableWidget *table) {
+    QTime t = QTime::currentTime();
+
+    table->clear(); // Sicherstellen das TableWidget nicht auf die zu zerstörenden Items zugreift
+    Delete();
+
+    QTableWidgetItem* item = nullptr;
+    QMap<int, QTableWidgetItem*> column;
+    int row = 0;
+
+    for (auto ele = m_files.begin(); ele != m_files.end(); ele++, row++) {
+        item = new QTableWidgetItem(ele.value().GetInstrument());
+        item->setData(Qt::UserRole, ele.key());
+        column.insert(0, item);
+
+        item = new QTableWidgetItem(ele.value().GetPart());
+        item->setData(Qt::UserRole, ele.key());
+        column.insert(1, item);
+
+        QFileInfo info(ele.value().GetFile());
+        item = new QTableWidgetItem(info.fileName());
+        item->setData(Qt::UserRole, ele.key());
+        column.insert(2, item);
+
+        m_items.insert(row, column);
+        column.clear();
+
+        item = nullptr;
+    }
+
+    qDebug() << __func__ << " : " << t.elapsed();
+}
+
+void Eintrag::Delete() {
+    if (!m_items.isEmpty()) {
+        for (auto row = m_items.begin(); row != m_items.end(); row++) {
+            for (auto column = row.value().begin(); column != row.value().end(); column++) {
+                if (column.value()) {
+                    delete column.value();
+                    column.value() = nullptr;
+                }
+            }
+        }
+        m_items.clear();
+    }
 }

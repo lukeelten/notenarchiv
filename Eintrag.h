@@ -3,6 +3,10 @@
 
 #include <QString>
 #include <QSqlRecord>
+#include <QHash>
+#include <QTableWidgetItem>
+
+#include "File.h"
 
 class Eintrag
 {
@@ -35,18 +39,26 @@ public:
     void SetComment(const QString& comment) { m_comment = comment; m_changed = true; }
 
     bool IsChanged() const { return m_changed; }
-    bool IsNew() const { return m_new; }
 
-    void Saved() { m_changed = true; }
+    void Saved() { m_changed = false; m_new = false; }
+
+    File* GetFile() { return &m_files[item]; }
+
+    void ShowFiles(QTableWidget* table);
+    void GenerateItems(QTableWidget* table);
 
     QString GetQueryString() const;
     QString GetDeleteQuery() const;
+    void Delete();
 
 private:
     int m_id;
     QString m_fach,m_name, m_writer, m_style, m_comment;
 
     bool m_new, m_changed;
+
+    QHash<int, File> m_files;
+    QHash<int, QHash<int, QTableWidgetItem*>> m_items;
 };
 
 #endif // EINTRAG_H

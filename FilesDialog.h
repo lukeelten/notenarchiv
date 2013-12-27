@@ -15,8 +15,6 @@ public:
     explicit FilesDialog(QWidget *parent = 0);
     ~FilesDialog();
 
-    void Set
-
 private:
     Ui::FilesDialog *ui;
 };

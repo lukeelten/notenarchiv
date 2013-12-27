@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->textWriter, SIGNAL(textEdited(QString)), this, SLOT(WriterChanged(QString)));
     connect(ui->textComment, SIGNAL(textChanged()), this, SLOT(CommentChanged()));
     connect(ui->toolbarNew, SIGNAL(triggered()), this, SLOT(Add()));
+    connect(ui->files, SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)), this, SLOT(FileTableChanged(QTableWidgetItem*,QTableWidgetItem*)));
 
     LoadItems();
 
@@ -176,6 +177,18 @@ void MainWindow::LoadItems() {
         item = nullptr;
     }
 
+    QTableWidgetItem* item1 = new QTableWidgetItem("Item 1");
+    QTableWidgetItem* item2 = new QTableWidgetItem("Item 2");
+    QTableWidgetItem* item3 = new QTableWidgetItem("Item 3");
+
+    ui->files->setRowCount(1);
+
+    ui->files->setItem(0, 0, item1);
+    ui->files->setItem(0, 1, item2);
+    ui->files->setItem(0, 2, item3);
+
+    ui->files->show();
+
     delete model;
 }
 
@@ -302,6 +315,7 @@ void MainWindow::ItemDelete() {
         }
     }
 
+    m_items[current].Delete();
     m_items.remove(current);
     ui->liste->removeItemWidget(current);
 
