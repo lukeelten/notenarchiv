@@ -1,46 +1,34 @@
 #include <QSqlRecord>
 #include <QString>
-#include <QVariant>
-#include <utility>
 
 #include "Eintrag.h"
 
-Eintrag::Eintrag() : m_id(-1), m_fach(), m_name(), m_writer(), m_style(), m_comment(), m_new(true), m_changed(false) {
+Eintrag::Eintrag(const QSqlRecord& empty_rec) : m_rec(empty_rec), m_changed(false), m_row(-1) {
+    m_rec.clearValues();
+    if (m_rec.contains("id"))
+        m_rec.remove(m_rec.indexOf("id"));
 }
 
-Eintrag::Eintrag(const int id, const QString &name, const QString &writer, const QString &style, const QString &comment, const QString& fach) : m_id(id),
-    m_fach(fach), m_name(name), m_writer(writer), m_style(style), m_comment(comment), m_new(false), m_changed(false) {
+Eintrag::Eintrag(const QString& name, const QString& writer, const QString& style, const QString& comment, const QString& fach, const QSqlRecord& empty_rec) : m_rec(empty_rec), m_changed(false), m_row(-1) {
+    m_rec.clearValues();
+
+    if (m_rec.contains("id"))
+        m_rec.remove(m_rec.indexOf("id"));
+
+    m_rec.setValue("name", name);
+    m_rec.setValue("komponist", writer);
+    m_rec.setValue("richtung", style);
+    m_rec.setValue("bemerkung", comment);
+    m_rec.setValue("fach", fach);
 }
 
-Eintrag::Eintrag(const QSqlRecord& rec) : m_id(rec.value("id").toInt()),
-    m_fach(rec.value("fach").toString()),
-    m_name(rec.value("name").toString()),
-    m_writer(rec.value("komponist").toString()),
-    m_style(rec.value("richtung").toString()),
-    m_comment(rec.value("bemerkung").toString()),
-    m_new(false),
-    m_changed(false) {
+Eintrag::Eintrag(const QSqlRecord& rec, const int row) : m_rec(rec), m_changed(false), m_row(row) {
 }
 
-QString Eintrag::GetQueryString() const {
-    QString q;
+int Eintrag::GetId() const {
+    if (m_rec.isNull("id"))
+        return -1;
 
-    if (m_new) {
-        q = "INSERT INTO notenarchiv (name, komponist, richtung, bemerkung, fach) VALUES (\"" + m_name + "\", \"" + m_writer + "\", \"" + m_style + "\", \"" + m_comment + "\", \"" + m_fach + "\")";
-    } else {
-        q = "UPDATE notenarchiv SET name = \"" + m_name + "\", komponist = \"" + m_writer + "\", richtung = \"" + m_style + "\", bemerkung = \"" + m_comment + "\", fach = \"" + m_fach + "\" WHERE id = ";
-        q.append(QVariant(m_id).toString());
-    }
-
-    return std::move(q);
+    return m_rec.value("id");
 }
 
-QString Eintrag::GetDeleteQuery() const {
-    if (m_new)
-        return QString();
-
-    QString q =  "DELETE FROM notenarchiv WHERE id = ";
-    q.append(QVariant(m_id).toString());
-
-    return std::move(q);
-}

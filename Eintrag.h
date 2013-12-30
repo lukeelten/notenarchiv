@@ -3,13 +3,17 @@
 
 #include <QString>
 #include <QSqlRecord>
+#include <QVariant>
 
 class Eintrag
 {
 public:
-    Eintrag();
-    Eintrag(const int id, const QString& name, const QString& writer, const QString& style, const QString& comment, const QString& fach);
-    Eintrag(const QSqlRecord& rec);
+    Eintrag() = delete;
+    ~Eintrag() = default;
+
+    Eintrag(const QSqlRecord& empty_rec);
+    Eintrag(const QString& name, const QString& writer, const QString& style, const QString& comment, const QString& fach, const QSqlRecord& empty_rec);
+    Eintrag(const QSqlRecord& rec, const int row);
 
     Eintrag(const Eintrag& ) = default;
     Eintrag& operator = (const Eintrag& ) = default;
@@ -17,36 +21,36 @@ public:
     Eintrag(Eintrag&& ) = default;
     Eintrag& operator = (Eintrag&& ) = default;
 
-    int GetId() const { return m_id; }
+    int GetId() const;
 
-    QString GetFach() const { return m_fach; }
-    void SetFach(const QString& fach) { m_fach = fach; m_changed = true; }
+    QString GetFach() const { return m_rec.value("fach").toString(); }
+    void SetFach(const QString& fach) { m_rec.setValue("fach", fach); m_changed = true; }
 
-    QString GetName() const { return m_name; }
-    void SetName(const QString& name) { m_name = name; m_changed = true; }
+    QString GetName() const { return m_rec.value("name").toString(); }
+    void SetName(const QString& name) { m_rec.setValue("name", name); m_changed = true; }
 
-    QString GetWriter() const { return m_writer; }
-    void SetWriter(const QString& writer) { m_writer = writer; m_changed = true; }
+    QString GetWriter() const { return m_rec.value("komponist").toString(); }
+    void SetWriter(const QString& writer) { m_rec.setValue("komponist", writer); m_changed = true; }
 
-    QString GetStyle() const { return m_style; }
-    void SetStyle(const QString& style) { m_style = style; m_changed = true; }
+    QString GetStyle() const { return m_rec.value("richtung").toString(); }
+    void SetStyle(const QString& style) { m_rec.setValue("richtung", style); m_changed = true; }
 
-    QString GetComment() const { return m_comment; }
-    void SetComment(const QString& comment) { m_comment = comment; m_changed = true; }
+    QString GetComment() const { return m_rec.value("bemerkung").toString(); }
+    void SetComment(const QString& comment) { m_rec.setValue("bemerkung", comment); m_changed = true; }
 
     bool IsChanged() const { return m_changed; }
-    bool IsNew() const { return m_new; }
 
-    void Saved() { m_changed = true; }
+    void Saved() { m_changed = false; }
 
-    QString GetQueryString() const;
-    QString GetDeleteQuery() const;
+    QSqlRecord GetRecord() const { return m_rec; }
+    int GetRow() const { return m_row; }
+    void SetRecord(const QSqlRecord& rec, const int row) { m_rec = rec; m_changed = false; m_row = row; }
 
 private:
-    int m_id;
-    QString m_fach,m_name, m_writer, m_style, m_comment;
+    QSqlRecord m_rec;
 
-    bool m_new, m_changed;
+    bool m_changed;
+    int m_row;
 };
 
 #endif // EINTRAG_H
