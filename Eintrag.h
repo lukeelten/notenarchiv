@@ -8,7 +8,7 @@
 class Eintrag
 {
 public:
-    Eintrag() = delete;
+    Eintrag();
     ~Eintrag() = default;
 
     Eintrag(const QSqlRecord& empty_rec);

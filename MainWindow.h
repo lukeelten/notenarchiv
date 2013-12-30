@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include <QSqlTableModel>
 #include <QHash>
 
 #include "Eintrag.h"
@@ -21,7 +22,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *);
-    void LoadItems();
+    void LoadItems(const QString& filter = "");
     void ChangeItemStyle(QListWidgetItem* item, bool anywhere = false);
 
 public slots:
@@ -44,6 +45,7 @@ private:
     bool m_changed;
 
     QHash<QListWidgetItem*, Eintrag> m_items;
+    QSqlTableModel* m_model;
 
 };
 
