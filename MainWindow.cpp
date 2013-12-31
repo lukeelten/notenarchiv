@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_model = new QSqlTableModel(this, DB->GetDatabase());
     m_model->setTable("notenarchiv");
     m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_model->setSort(1, Qt::AscendingOrder);
 
     ui->setupUi(this);
 
@@ -148,19 +149,20 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
     ui->textWriter->setText(m_items[item].GetWriter());
 }
 
-void MainWindow::LoadItems(const QString& filter) {
+void MainWindow::LoadItems() {
     ui->liste->clear();
 
     m_model->setSort(1, Qt::AscendingOrder);
-    if (!filter.isEmpty())
-        m_model->setFilter(filter);
-
     m_model->select();
 
     if (m_model->lastError().isValid()) {
         qDebug() << __func__ << " : " << m_model->lastError();
         return;
     }
+
+    while (m_model->canFetchMore())
+        m_model->fetchMore();
+
 
     QListWidgetItem* item = nullptr;
     int numrows = m_model->rowCount();
@@ -182,6 +184,8 @@ void MainWindow::LoadItems(const QString& filter) {
 
         item = nullptr;
     }
+
+    qDebug() << sizeof(m_items);
 }
 
 void MainWindow::CommentChanged() {

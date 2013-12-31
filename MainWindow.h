@@ -22,7 +22,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *);
-    void LoadItems(const QString& filter = "");
+    void LoadItems();
     void ChangeItemStyle(QListWidgetItem* item, bool anywhere = false);
 
 public slots:
