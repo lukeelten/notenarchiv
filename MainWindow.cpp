@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->textWriter, SIGNAL(textEdited(QString)), this, SLOT(WriterChanged(QString)));
     connect(ui->textComment, SIGNAL(textChanged()), this, SLOT(CommentChanged()));
     connect(ui->toolbarNew, SIGNAL(triggered()), this, SLOT(Add()));
+    connect(ui->buttonSearch, SIGNAL(clicked()), this, SLOT(SearchClicked()));
+    connect(ui->textSearch, SIGNAL(textEdited(QString)), this, SLOT(SearchTextChanged(QString)));
+    connect(ui->textSearch, SIGNAL(returnPressed()), this, SLOT(SearchClicked()));
 
     LoadItems();
 
@@ -137,9 +140,36 @@ bool MainWindow::SaveAll() {
 }
 
 void MainWindow::ItemChanged(QListWidgetItem* item) {
+    if (!item) {
+        ui->textName->clear();
+        ui->textNumber->clear();
+        ui->textComment->clear();
+        ui->textStyle->clear();
+        ui->textWriter->clear();
+        ui->liste->clearSelection();
+        ui->liste->scrollToTop();
+        qDebug() << __func__ << " : " << "nullptr";
+
+        return;
+    }
+
     if (!m_items.contains(item)) {
         qDebug() << __func__ << " : " << " Unknown item";
         return;
+    }
+
+    if (item->isHidden()) {
+        int row = 0;
+
+        while (item->isHidden()) {
+            item = ui->liste->item(row);
+            row++;
+
+            if (row > ui->liste->count() || !item) {
+                ItemChanged();
+                return;
+            }
+        }
     }
 
     ui->textName->setText(m_items[item].GetName());
@@ -147,12 +177,16 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
     ui->textComment->setPlainText(m_items[item].GetComment());
     ui->textStyle->setText(m_items[item].GetStyle());
     ui->textWriter->setText(m_items[item].GetWriter());
+
+    ui->liste->setCurrentItem(item);
+    ui->liste->scrollToItem(item);
 }
 
 void MainWindow::LoadItems() {
+    m_items.clear();
     ui->liste->clear();
 
-    m_model->setSort(1, Qt::AscendingOrder);
+
     m_model->select();
 
     if (m_model->lastError().isValid()) {
@@ -179,13 +213,34 @@ void MainWindow::LoadItems() {
 
         m_items.insert(item, std::move(noten));
 
-        if (i == 0)
-            ItemChanged(item);
-
         item = nullptr;
     }
 
-    qDebug() << sizeof(m_items);
+    ItemChanged(ui->liste->item(0));
+}
+
+void MainWindow::ShowItems(const QString& filter) {
+    QListWidgetItem* show = ui->liste->currentItem();
+
+    for (auto i = m_items.begin(); i != m_items.end(); i++) {
+        i.key()->setHidden(true);
+
+        bool add = false;
+
+        if (!filter.isEmpty()) {
+            QString name = i.value().GetName();
+            if (name.contains(filter, Qt::CaseInsensitive))
+                add = true;
+        } else
+            add = true;
+
+        if (add) {
+            i.key()->setHidden(false);
+        }
+
+    }
+
+    ItemChanged(show);
 }
 
 void MainWindow::CommentChanged() {
@@ -314,10 +369,24 @@ void MainWindow::ItemDelete() {
             return;
         }
     }
+    current->setHidden(true);
 
     m_items.remove(current);
     ui->liste->removeItemWidget(current);
 
     if(current)
         delete current; // Bin nicht sicher ob ich das darf
+}
+
+void MainWindow::SearchClicked() {
+    ShowItems(ui->textSearch->text());
+}
+
+void MainWindow::SearchTextChanged(const QString& ) {
+    if (ui->textSearch->text().isEmpty()) {
+        QListWidgetItem* selection = ui->liste->currentItem();
+
+        ShowItems(QString());
+        ItemChanged(selection);
+    }
 }

@@ -35,6 +35,9 @@
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectItems</enum>
         </property>
+        <property name="movement">
+         <enum>QListView::Static</enum>
+        </property>
         <property name="modelColumn">
          <number>0</number>
         </property>
@@ -67,6 +70,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="acceptDrops">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
