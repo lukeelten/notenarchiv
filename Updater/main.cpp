@@ -34,17 +34,9 @@ int main(int argc, char *argv[])
     CommandParser cmd;
     cmd.Process(app);
 
-    if (!cmd.Qiet()) {
-        Updater w;
-        w.show();
-    }
+    Updater window;
+    window.exec();
 
-    if (cmd.UpdateUrl())
-        qDebug() << cmd.UpdateUrlString();
-
-    if (cmd.Qiet())
-        return 0;
-    else
-        return app.exec();
+    return app.exec();
 }
 

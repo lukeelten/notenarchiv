@@ -16,9 +16,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         Updater.cpp \
-    CommandParser.cpp
+    CommandParser.cpp \
+    UpdateInformation.cpp
 
 HEADERS  += Updater.h \
-    CommandParser.h
+    CommandParser.h \
+    UpdateInformation.h
 
 FORMS    += Updater.ui
+
+OTHER_FILES += \
+    notenarchiv.json
