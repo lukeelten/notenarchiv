@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QVariant>
 
 class CommandParser
 {
@@ -26,6 +27,7 @@ public:
     bool StartUpdate() const { return m_parser.isSet(m_update); }
     bool UpdateUrl() const { return m_parser.isSet(m_url); }
     QString UpdateUrlString() const { return m_parser.value(m_url); }
+    int GetLocalVersion() const { return QVariant(m_parser.value(m_version)).toInt(); }
 
 private:
     QCommandLineParser m_parser;
@@ -34,6 +36,7 @@ private:
     QCommandLineOption m_search; // Suche nur nach Updates
     QCommandLineOption m_update; // Starte Update
     QCommandLineOption m_url; // URL zum Updateserver
+    QCommandLineOption m_version; // lokale Version als Int
 };
 
 #endif // COMMANDPARSER_H

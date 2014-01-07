@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     CommandParser cmd;
     cmd.Process(app);
 
-    Updater window;
+    Updater window(0);
     window.exec();
 
     return app.exec();
