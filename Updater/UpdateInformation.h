@@ -26,8 +26,10 @@ public:
     int GetRemoteVersion() const { return m_json["version"].toInt(); }
     QList<QUrl> GetFiles() const;
 
-    bool ShouldUpdate(const int local_version) const { return (GetRemoteVersion() > local_version); }
+    //bool ShouldUpdate(const int local_version) const { return (GetRemoteVersion() > local_version); }
     bool IsValid () const { return (!m_json.isEmpty()); }
+
+    void SetJson(const QString& json);
 
 private:
     QJsonObject m_json;

@@ -5,14 +5,13 @@
 #include <QList>
 #include <QString>
 #include <QUrl>
+#include <QDebug>
 #include <QVariant>
+#include <QJsonParseError>
 
 #include "UpdateInformation.h"
 
 UpdateInformation::UpdateInformation(const QString& json) {
-    QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
-
-    m_json = doc.object();
 }
 
 QList<QUrl> UpdateInformation::GetFiles() const {
@@ -31,4 +30,13 @@ QList<QUrl> UpdateInformation::GetFiles() const {
 
 
     return qMove(list);
+}
+
+void UpdateInformation::SetJson(const QString& json) {
+
+    QJsonDocument doc(QJsonDocument::fromJson(json.toUtf8()));
+
+    m_json = doc.object();
+
+    qDebug() << Q_FUNC_INFO << " : " << m_json.isEmpty();
 }

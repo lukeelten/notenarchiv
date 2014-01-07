@@ -1,4 +1,7 @@
 #include <math.h>
+#include <QDebug>
+#include <QVariant>
+#include <QMessageBox>
 
 #include "Updater.h"
 #include "ui_Updater.h"
@@ -36,9 +39,6 @@ Updater::~Updater()
     if (m_net)
         delete m_net;
 
-    if (m_reply)
-        delete m_reply;
-
     if (ui)
         delete ui;
 }
@@ -49,6 +49,9 @@ void Updater::GetInformation() {
     ui->progress->setValue(0);
 
     m_reply = m_net->get(QNetworkRequest(m_url));
+    m_numfiles = 1;
+    m_currentfile = 0;
+
     connect(m_reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(Progress(qint64,qint64)));
     connect(m_reply, SIGNAL(finished()), this, SLOT(FinishedSearch()));
 
@@ -85,4 +88,9 @@ void Updater::Progress(qint64 received, qint64 total) {
 void Updater::FinishedSearch() {
     ui->text->setText("Finished");
 
+    //QMessageBox::information(this, "Info", str, QMessageBox::Close, QMessageBox::Close);
+
+    m_info.SetJson(m_reply->readAll());
+
+    ui->text->setText("Remote Version: " + QVariant(m_info.GetRemoteVersion()).toString());
 }

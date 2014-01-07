@@ -1,7 +1,4 @@
 {
-    "version" : 010,
-    "files" : [
-        "https://lukeelten.de/",
-        "https://lukeelten.de"
-    ]
+"version" : 100,
+"files" : [ "http://lukeelten.de", "http://lukeelten.de" ]
 }

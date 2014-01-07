@@ -35,8 +35,6 @@ int main(int argc, char *argv[])
     cmd.Process(app);
 
     Updater window(0);
-    window.exec();
-
-    return app.exec();
+    return window.exec();
 }
 
