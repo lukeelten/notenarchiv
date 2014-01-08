@@ -68,6 +68,7 @@ void MainWindow::closeEvent(QCloseEvent * event) {
     msg.setInformativeText("Möchten Sie die Änderungen speichern?");
     msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msg.setIcon(QMessageBox::Question);
+    msg.set
 
     int ret = QMessageBox::Discard;
 
@@ -129,7 +130,7 @@ bool MainWindow::SaveAll() {
     if (submit) {
         if (!m_model->submitAll()) {
             if (m_model->lastError().isValid())
-                qDebug() << __func__ << " : " << m_model->lastError();
+                qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
 
             return false;
         }
@@ -147,17 +148,18 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
         ui->textStyle->clear();
         ui->textWriter->clear();
         ui->liste->clearSelection();
-        ui->liste->scrollToTop();
-        qDebug() << __func__ << " : " << "nullptr";
+        qDebug() << Q_FUNC_INFO << " : " << "nullptr";
 
         return;
     }
 
     if (!m_items.contains(item)) {
-        qDebug() << __func__ << " : " << " Unknown item";
+        qDebug() << Q_FUNC_INFO << " : " << " Unknown item";
         return;
     }
 
+    // Gehört zum alten Such-Algo
+    /*
     if (item->isHidden()) {
         int row = 0;
 
@@ -171,6 +173,10 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
             }
         }
     }
+    */
+
+    if (ui->liste->row(item) < 0)
+        item = ui->liste->item(0);
 
     ui->textName->setText(m_items[item].GetName());
     ui->textNumber->setText(m_items[item].GetFach());
@@ -179,7 +185,6 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
     ui->textWriter->setText(m_items[item].GetWriter());
 
     ui->liste->setCurrentItem(item);
-    ui->liste->scrollToItem(item);
 }
 
 void MainWindow::LoadItems() {
@@ -190,7 +195,7 @@ void MainWindow::LoadItems() {
     m_model->select();
 
     if (m_model->lastError().isValid()) {
-        qDebug() << __func__ << " : " << m_model->lastError();
+        qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
         return;
     }
 
@@ -220,9 +225,14 @@ void MainWindow::LoadItems() {
 }
 
 void MainWindow::ShowItems(const QString& filter) {
+    qDebug() << Q_FUNC_INFO;
     QListWidgetItem* show = ui->liste->currentItem();
 
-    for (auto i = m_items.begin(); i != m_items.end(); i++) {
+
+    for (QHash<QListWidgetItem*, Eintrag>::iterator i = m_items.begin(); i != m_items.end(); i++) {
+
+        // Alter Such Algo
+        /*
         i.key()->setHidden(true);
 
         bool add = false;
@@ -236,6 +246,17 @@ void MainWindow::ShowItems(const QString& filter) {
 
         if (add) {
             i.key()->setHidden(false);
+        }
+        */
+
+        QString name = i.value().GetName();
+        if (!name.contains(filter, Qt::CaseInsensitive)) {
+            int row = ui->liste->row(i.key());
+            if (row >= 0)
+                ui->liste->takeItem(row);
+        } else {
+            if (ui->liste->row(i.key()) < 0)
+                ui->liste->addItem(i.key());
         }
 
     }
@@ -356,14 +377,14 @@ void MainWindow::ItemDelete() {
         return;
 
     if (!m_items.contains(current)) {
-        qDebug() << __func__ << " : " << "Invalid Item";
+        qDebug() << Q_FUNC_INFO << " : " << "Invalid Item";
         return;
     }
 
     if (m_items[current].GetRow() >= 0) {
         if (!m_model->removeRows(m_items[current].GetRow(), 1)) {
             if (m_model->lastError().isValid())
-                qDebug() << __func__ << " : " << m_model->lastError();
+                qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
 
             QMessageBox::information(this, "Löschen fehlgeschlagen", "Das Löschen des ausgewählten Elements ist fehlgeschlagen.", QMessageBox::Ok, QMessageBox::Ok);
             return;
