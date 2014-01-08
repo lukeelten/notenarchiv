@@ -1,14 +1,15 @@
 #include <QApplication>
 #include <QVariant>
 #include <QString>
+#include <QCommandLineParser>
 
 #include "MainWindow.h"
 #include "Logfile.h"
 #include "Database.h"
 
-const int VERSION_MAJOR = 0;
+const int VERSION_MAJOR = 1;
 const int VERSION_MINOR = 0;
-const int VERSION_PATCHLEVEL = 1;
+const int VERSION_PATCHLEVEL = 0;
 
 constexpr int GetVersionInt() {
     return ((VERSION_MAJOR * 100) + (VERSION_MINOR * 10) + (VERSION_PATCHLEVEL));
@@ -29,9 +30,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    a.setApplicationName("Notenarchiv Musikverein Elten");
-    a.setApplicationDisplayName("Notenarchiv MVE");
+    a.setApplicationName("Notenarchiv");
+    a.setApplicationDisplayName("Notenarchiv");
     a.setApplicationVersion(GetVersion());
+
+    QCommandLineParser cmd;
+    cmd.addHelpOption();
+    cmd.addVersionOption();
+    cmd.process(a);
 
     MainWindow w;
     w.show();

@@ -68,7 +68,6 @@ void MainWindow::closeEvent(QCloseEvent * event) {
     msg.setInformativeText("Möchten Sie die Änderungen speichern?");
     msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msg.setIcon(QMessageBox::Question);
-    msg.set
 
     int ret = QMessageBox::Discard;
 
