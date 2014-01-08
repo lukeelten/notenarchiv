@@ -250,6 +250,9 @@
     <addaction name="menuAbout"/>
    </widget>
    <widget class="QMenu" name="menuDatenbank">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Datenbank</string>
     </property>
