@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->menuAbout, SIGNAL(triggered()), this, SLOT(ShowAbout()));
     connect(ui->toolbarSave, SIGNAL(triggered()), this, SLOT(SaveAll()));
     connect(ui->toolbarDelete, SIGNAL(triggered()), this, SLOT(ItemDelete()));
-    //connect(ui->liste, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(ItemChanged(QListWidgetItem*)));
     connect(ui->liste, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(CurrentItemChanged(QListWidgetItem*,QListWidgetItem*)));
     connect(ui->textName, SIGNAL(textEdited(QString)), this, SLOT(NameChanged(QString)));
     connect(ui->textNumber, SIGNAL(textEdited(QString)), this, SLOT(NumberChanged(QString)));
@@ -174,6 +173,7 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
     }
     */
 
+    // Gehört zum neuen Suchalgo
     if (ui->liste->row(item) < 0)
         item = ui->liste->item(0);
 

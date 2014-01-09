@@ -44,8 +44,6 @@ public slots:
 
     void ItemDelete();
 
-    void FileTableChanged(QTableWidgetItem* current, QTableWidgetItem* ) { qDebug() << __func__ << " : " << current; }
-
 private:
     Ui::MainWindow *ui;
     bool m_changed;

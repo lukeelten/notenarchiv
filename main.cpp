@@ -8,7 +8,7 @@
 #include "Database.h"
 
 const int VERSION_MAJOR = 1;
-const int VERSION_MINOR = 0;
+const int VERSION_MINOR = 1;
 const int VERSION_PATCHLEVEL = 0;
 
 constexpr int GetVersionInt() {
