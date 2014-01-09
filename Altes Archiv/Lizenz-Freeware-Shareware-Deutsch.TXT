@@ -1,0 +1,44 @@
+1. Vertragsgegenstand
+
+Gegenstand des Vertrages ist das auf den Datenträgern aufgezeichnete Computerprogramm, einschließlich der Runtime-Elemente und der Datenbank, der Programmbeschreibung und Bedienungsanleitung sowie sonstiges zugehöriges schriftliches Material. Sie werden im Folgenden als Software bezeichnet. KRONSOFT macht darauf aufmerksam, dass es nach dem Stand der Technik nicht möglich ist, Computer-Software so zu erstellen, dass sie in allen Anwendungen und Kombinationen fehlerfrei arbeitet.
+
+2. Umfang der Benutzung
+
+KRONSOFT gewährt Ihnen für die Dauer dieses Vertrages das einfache, nicht-ausschließliche und persönliche Recht (Lizenz), die beiliegende Kopie der KRONSOFT-Software auf einem Computer, oder im Netzwerk zu benutzen. Entgeltliche Weitergabe in jeglicher Form ist ausdrücklich untersagt.
+
+3. Besondere Beschränkungen
+
+Dem Lizenznehmer ist untersagt, ohne vorherige schriftliche Einwilligung von KRONSOFT die Software oder das dazugehörige schriftliche Material an einen Dritten zu übergeben oder einem Dritten sonst zugänglich zu machen.
+Dekompilierung der Software ist untersagt.
+
+4. Inhaberschaft an Rechten
+
+Sie erhalten mit dem Erwerb des Produktes nur Eigentum an den Datenträgern, auf denen die Software aufgezeichnet ist. Ein Erwerb von Rechten an der Software selbst ist damit nicht verbunden. KRONSOFT behält sich alle Rechte an der Software vor.
+
+5. Vervielfältigung
+
+Die Software und das dazugehörige schriftliche Material sind urheberrechtlich geschützt. Das Anfertigen einer Reservekopie ist zu Datensicherungszwecken erlaubt. Sie sind verpflichtet auf der Reservekopie den Urheberrechtsvermerk von KRONSOFT anzubringen.
+
+6. Übertragung des Benutzungsrechtes
+
+Das Recht zur Nutzung der Software kann nur mit vorheriger schriftlicher Einwilligung von KRONSOFT und nur unter den Bedingungen dieses Vertrages an einen Dritten übertragen werden. Jegliche Art der entgeltlichen Weitergabe, Verschenken, Vermieten und Verleih der Software sind ausdrücklich untersagt.
+
+7. Dauer des Vertrages
+
+Der Vertrag läuft auf unbestimmte Zeit. Das Recht des Lizenznehmers erlischt automatisch ohne Kündigung, wenn er eine Bedingung dieses Vertrages verletzt. Bei Beendigung des Nutzungs-rechtes ist er verpflichtet, die Originaldatenträger, sowie alle Kopien der Software, sowie alles dazugehörige schriftliche Material zu vernichten.
+
+8. Zahlungen / Schadensersatz
+
+Alle Kosten, die durch nicht termingerechte oder unvollständige Zahlungen entstehen und vom Lizenznehmer zu vertreten sind, gehen zu seinen Lasten. Insbesondere ist KRONSOFT berechtigt, Bearbeitungsgebühren in Höhe von 25 Euro zu berechnen. Ansonsten gelten die gesetzlichen Regelungen.
+
+9. Änderungen und Aktualisierungen
+
+KRONSOFT ist berechtigt, Aktualisierungen der Software nach eigenem Ermessen zu erstellen. KRONSOFT ist nicht verpflichtet die Lizenznehmer über Software-Aktualisierungen zu unterrichten.
+
+10. Gewährleistung und Haftung von KRONSOFT
+
+Für Freeware und Shareware übernimmt KRONSOFT keine Haftung.
+
+11. Sonstiges
+
+Für alle KRONSOFT Verträge gilt der gesetzliche Gerichtsstand. Es gilt deutsches Recht.

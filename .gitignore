@@ -1,0 +1,6 @@
+*.user
+*.autosave
+*~
+*.temp
+*.tmp
+*lock
