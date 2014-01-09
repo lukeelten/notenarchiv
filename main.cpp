@@ -8,13 +8,8 @@
 #include "Database.h"
 
 const int VERSION_MAJOR = 1;
-<<<<<<< HEAD
-const int VERSION_MINOR = 0;
-const int VERSION_PATCHLEVEL = 1;
-=======
 const int VERSION_MINOR = 1;
 const int VERSION_PATCHLEVEL = 0;
->>>>>>> ae5e7483368ccbd1595a8f20d7c4d36141af09dc
 
 constexpr int GetVersionInt() {
     return ((VERSION_MAJOR * 100) + (VERSION_MINOR * 10) + (VERSION_PATCHLEVEL));
