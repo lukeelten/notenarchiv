@@ -48,4 +48,5 @@ OTHER_FILES += \
     Icons/Save.png \
     Icons/Search.png \
     Icons/icon.gif \
-    Notenarchiv.sqlite
+    Notenarchiv.sqlite \
+    Icons/icon.ico

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Notenarchiv MVE</string>
+   <string/>
   </property>
   <property name="windowIcon">
    <iconset resource="Icons.qrc">
@@ -35,8 +35,14 @@
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectItems</enum>
         </property>
+        <property name="movement">
+         <enum>QListView::Static</enum>
+        </property>
         <property name="modelColumn">
          <number>0</number>
+        </property>
+        <property name="batchSize">
+         <number>1000</number>
         </property>
         <property name="sortingEnabled">
          <bool>true</bool>
@@ -64,6 +70,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="acceptDrops">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -322,6 +331,9 @@
     <addaction name="menuAbout"/>
    </widget>
    <widget class="QMenu" name="menuDatenbank">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Datenbank</string>
     </property>

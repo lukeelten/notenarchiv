@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include <QSqlTableModel>
 #include <QHash>
 #include <QDebug>
 
@@ -24,19 +25,22 @@ protected:
     void closeEvent(QCloseEvent *);
     void LoadItems();
     void ChangeItemStyle(QListWidgetItem* item, bool anywhere = false);
+    void ShowItems(const QString& filter);
 
 public slots:
     void ShowAbout();
     bool SaveAll();
     void Add();
 
-    void ItemChanged(QListWidgetItem* item);
+    void ItemChanged(QListWidgetItem* item = nullptr);
     void CurrentItemChanged(QListWidgetItem* item, QListWidgetItem* ) { ItemChanged(item); }
     void CommentChanged();
     void NameChanged(const QString& );
     void NumberChanged(const QString& );
     void StyleChanged(const QString& );
     void WriterChanged(const QString& );
+    void SearchClicked();
+    void SearchTextChanged(const QString& );
 
     void ItemDelete();
 
@@ -47,7 +51,7 @@ private:
     bool m_changed;
 
     QHash<QListWidgetItem*, Eintrag> m_items;
-
+    QSqlTableModel* m_model;
 };
 
 #endif // MAINWINDOW_H

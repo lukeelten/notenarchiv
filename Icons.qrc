@@ -8,5 +8,6 @@
         <file alias="save">Icons/Save.png</file>
         <file alias="search">Icons/Search.png</file>
         <file>Icons/icon.gif</file>
+        <file>Icons/icon.ico</file>
     </qresource>
 </RCC>

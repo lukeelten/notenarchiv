@@ -21,6 +21,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     QTime t = QTime::currentTime();
 
+    m_model = new QSqlTableModel(this, DB->GetDatabase());
+    m_model->setTable("notenarchiv");
+    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_model->setSort(1, Qt::AscendingOrder);
+
     ui->setupUi(this);
 
     // Manuelle konnektierungen
@@ -35,7 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->textWriter, SIGNAL(textEdited(QString)), this, SLOT(WriterChanged(QString)));
     connect(ui->textComment, SIGNAL(textChanged()), this, SLOT(CommentChanged()));
     connect(ui->toolbarNew, SIGNAL(triggered()), this, SLOT(Add()));
-    connect(ui->files, SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)), this, SLOT(FileTableChanged(QTableWidgetItem*,QTableWidgetItem*)));
+    connect(ui->buttonSearch, SIGNAL(clicked()), this, SLOT(SearchClicked()));
+    connect(ui->textSearch, SIGNAL(textEdited(QString)), this, SLOT(SearchTextChanged(QString)));
+    connect(ui->textSearch, SIGNAL(returnPressed()), this, SLOT(SearchClicked()));
 
     LoadItems();
 
@@ -43,8 +50,9 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow()
-{
+{    
     delete ui;
+    delete m_model;
 }
 
 void MainWindow::ShowAbout() {
@@ -102,27 +110,29 @@ void MainWindow::closeEvent(QCloseEvent * event) {
 }
 
 bool MainWindow::SaveAll() {
-    auto iter = m_items.begin();
-    QSqlQuery q = DB->GetEmptyQuery();
+    if (!m_changed)
+        return true;
 
-    for (;iter != m_items.end(); iter++) {
-        if (!iter.value().IsChanged())
-            continue;
+    bool submit = false;
+    for (auto iter = m_items.begin(); iter != m_items.end(); iter++) {
+        if (iter.value().IsChanged()) {
+            m_model->setRecord(iter.value().GetRow(), iter.value().GetRecord());
+            iter.value().Saved();
+            iter.key()->setText(iter.value().GetName());
+            QFont f = iter.key()->font();
+            f.setItalic(false);
+            iter.key()->setFont(f);
+            submit = true;
+        }
+    }
 
-        q.exec(iter.value().GetQueryString());
+    if (submit) {
+        if (!m_model->submitAll()) {
+            if (m_model->lastError().isValid())
+                qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
 
-        if (q.lastError().isValid()) {
-            qDebug() << __func__ << " : " << q.lastError();
             return false;
         }
-
-        iter.value().Saved();
-
-        QFont f = iter.key()->font();
-        f.setItalic(false);
-        iter.key()->setFont(f);
-        iter.key()->setText(iter.value().GetName());
-
     }
 
     m_changed = false;
@@ -130,67 +140,127 @@ bool MainWindow::SaveAll() {
 }
 
 void MainWindow::ItemChanged(QListWidgetItem* item) {
-    if (!m_items.contains(item)) {
-        qDebug() << __func__ << " Unknown item";
+    if (!item) {
+        ui->textName->clear();
+        ui->textNumber->clear();
+        ui->textComment->clear();
+        ui->textStyle->clear();
+        ui->textWriter->clear();
+        ui->liste->clearSelection();
+        qDebug() << Q_FUNC_INFO << " : " << "nullptr";
+
         return;
     }
+
+    if (!m_items.contains(item)) {
+        qDebug() << Q_FUNC_INFO << " : " << " Unknown item";
+        return;
+    }
+
+    // Gehört zum alten Such-Algo
+    /*
+    if (item->isHidden()) {
+        int row = 0;
+
+        while (item->isHidden()) {
+            item = ui->liste->item(row);
+            row++;
+
+            if (row > ui->liste->count() || !item) {
+                ItemChanged();
+                return;
+            }
+        }
+    }
+    */
+
+    if (ui->liste->row(item) < 0)
+        item = ui->liste->item(0);
 
     ui->textName->setText(m_items[item].GetName());
     ui->textNumber->setText(m_items[item].GetFach());
     ui->textComment->setPlainText(m_items[item].GetComment());
     ui->textStyle->setText(m_items[item].GetStyle());
     ui->textWriter->setText(m_items[item].GetWriter());
+
+    ui->liste->setCurrentItem(item);
 }
 
 void MainWindow::LoadItems() {
+    m_items.clear();
+    ui->liste->clear();
 
-    QSqlTableModel* model = new QSqlTableModel(this, DB->GetDatabase());
 
-    model->setTable("notenarchiv");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model->setSort(1, Qt::AscendingOrder);
-    model->select();
+    m_model->select();
 
-    if (model->lastError().isValid()) {
-        qDebug() << __func__ << " : " << model->lastError();
-        delete model;
+    if (m_model->lastError().isValid()) {
+        qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
         return;
     }
 
+    while (m_model->canFetchMore())
+        m_model->fetchMore();
+
+
     QListWidgetItem* item = nullptr;
-    int numrows = model->rowCount();
-    QSqlRecord record;
+    int numrows = m_model->rowCount();
 
     for (int i = 0; i < numrows; i++) {
-        record = model->record(i);
+        QSqlRecord record = m_model->record(i);
 
         if (record.isEmpty())
             break;
 
-        item = new QListWidgetItem(record.value("name").toString(), ui->liste);
+        Eintrag noten(record, i);
 
-        Eintrag noten(record);
+        item = new QListWidgetItem(noten.GetName(), ui->liste);
+
         m_items.insert(item, std::move(noten));
-
-        if (i == 0)
-            ItemChanged(item);
 
         item = nullptr;
     }
 
-    QTableWidgetItem* item1 = new QTableWidgetItem("Item 1");
-    QTableWidgetItem* item2 = new QTableWidgetItem("Item 2");
-    QTableWidgetItem* item3 = new QTableWidgetItem("Item 3");
+    ItemChanged(ui->liste->item(0));
+}
 
-    ui->files->setRowCount(1);
+void MainWindow::ShowItems(const QString& filter) {
+    qDebug() << Q_FUNC_INFO;
+    QListWidgetItem* show = ui->liste->currentItem();
 
-    ui->files->setItem(0, 0, item1);
-    ui->files->setItem(0, 1, item2);
-    ui->files->setItem(0, 2, item3);
 
-    ui->files->show();
+    for (QHash<QListWidgetItem*, Eintrag>::iterator i = m_items.begin(); i != m_items.end(); i++) {
 
-    delete model;
+        // Alter Such Algo
+        /*
+        i.key()->setHidden(true);
+
+        bool add = false;
+
+        if (!filter.isEmpty()) {
+            QString name = i.value().GetName();
+            if (name.contains(filter, Qt::CaseInsensitive))
+                add = true;
+        } else
+            add = true;
+
+        if (add) {
+            i.key()->setHidden(false);
+        }
+        */
+
+        QString name = i.value().GetName();
+        if (!name.contains(filter, Qt::CaseInsensitive)) {
+            int row = ui->liste->row(i.key());
+            if (row >= 0)
+                ui->liste->takeItem(row);
+        } else {
+            if (ui->liste->row(i.key()) < 0)
+                ui->liste->addItem(i.key());
+        }
+
+    }
+
+    ItemChanged(show);
 }
 
 void MainWindow::CommentChanged() {
@@ -281,7 +351,7 @@ void MainWindow::ChangeItemStyle(QListWidgetItem *item, bool anywhere) {
 void MainWindow::Add() {
     QListWidgetItem* item = new QListWidgetItem("Neuer Eintrag", ui->liste);
 
-    Eintrag e;
+    Eintrag e(m_model->record(0));
     e.SetName("Neuer Eintrag");
 
     m_items.insert(item, e);
@@ -305,21 +375,38 @@ void MainWindow::ItemDelete() {
     if (ret == QMessageBox::No)
         return;
 
-    if (!m_items[current].GetDeleteQuery().isEmpty()) {
-        auto q = DB->GetEmptyQuery();
-        qDebug() << __func__ << " : " << "SQL-Query: " << m_items[current].GetDeleteQuery();
-        q.exec(m_items[current].GetDeleteQuery());
+    if (!m_items.contains(current)) {
+        qDebug() << Q_FUNC_INFO << " : " << "Invalid Item";
+        return;
+    }
 
-        if (q.lastError().isValid()) {
-            qDebug() << __func__ << " : " << q.lastError();
+    if (m_items[current].GetRow() >= 0) {
+        if (!m_model->removeRows(m_items[current].GetRow(), 1)) {
+            if (m_model->lastError().isValid())
+                qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
+
+            QMessageBox::information(this, "Löschen fehlgeschlagen", "Das Löschen des ausgewählten Elements ist fehlgeschlagen.", QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
     }
+    current->setHidden(true);
 
-    m_items[current].Delete();
     m_items.remove(current);
     ui->liste->removeItemWidget(current);
 
     if(current)
         delete current; // Bin nicht sicher ob ich das darf
+}
+
+void MainWindow::SearchClicked() {
+    ShowItems(ui->textSearch->text());
+}
+
+void MainWindow::SearchTextChanged(const QString& ) {
+    if (ui->textSearch->text().isEmpty()) {
+        QListWidgetItem* selection = ui->liste->currentItem();
+
+        ShowItems(QString());
+        ItemChanged(selection);
+    }
 }
