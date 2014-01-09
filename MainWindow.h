@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 #include <QSqlTableModel>
 #include <QHash>
+#include <QDebug>
 
 #include "Eintrag.h"
 

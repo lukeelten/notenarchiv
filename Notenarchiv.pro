@@ -19,17 +19,22 @@ SOURCES += main.cpp\
     AboutDialog.cpp \
     Database.cpp \
     Logfile.cpp \
-    Eintrag.cpp
+    Eintrag.cpp \
+    FilesDialog.cpp \
+    File.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
     Database.h \
     Singleton.h \
     Logfile.h \
-    Eintrag.h
+    Eintrag.h \
+    FilesDialog.h \
+    File.h
 
 FORMS    += MainWindow.ui \
-    AboutDialog.ui
+    AboutDialog.ui \
+    FilesDialog.ui
 
 RESOURCES += \
     Icons.qrc
