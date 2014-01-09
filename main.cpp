@@ -9,7 +9,7 @@
 
 const int VERSION_MAJOR = 1;
 const int VERSION_MINOR = 0;
-const int VERSION_PATCHLEVEL = 0;
+const int VERSION_PATCHLEVEL = 1;
 
 constexpr int GetVersionInt() {
     return ((VERSION_MAJOR * 100) + (VERSION_MINOR * 10) + (VERSION_PATCHLEVEL));
