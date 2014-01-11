@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql
+QT       += core gui sql printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     Logfile.cpp \
     Eintrag.cpp \
     FilesDialog.cpp \
-    File.cpp
+    File.cpp \
+    Printer.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
@@ -30,7 +31,8 @@ HEADERS  += MainWindow.h \
     Logfile.h \
     Eintrag.h \
     FilesDialog.h \
-    File.h
+    File.h \
+    Printer.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
@@ -49,4 +51,5 @@ OTHER_FILES += \
     Icons/Search.png \
     Icons/icon.gif \
     Notenarchiv.sqlite \
-    Icons/icon.ico
+    Icons/icon.ico \
+    Icons/Print.png

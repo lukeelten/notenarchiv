@@ -5,11 +5,13 @@
 #include <QSqlRecord>
 #include <QDebug>
 #include <QTime>
+#include <QCloseEvent>
 
 #include "AboutDialog.h"
 #include "Database.h"
 #include "Logfile.h"
 #include "Eintrag.h"
+#include "Printer.h"
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -42,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->buttonSearch, SIGNAL(clicked()), this, SLOT(SearchClicked()));
     connect(ui->textSearch, SIGNAL(textEdited(QString)), this, SLOT(SearchTextChanged(QString)));
     connect(ui->textSearch, SIGNAL(returnPressed()), this, SLOT(SearchClicked()));
+    connect(ui->toolbarPrint, SIGNAL(triggered()), this, SLOT(Print()));
 
     LoadItems();
 
@@ -409,4 +412,12 @@ void MainWindow::SearchTextChanged(const QString& ) {
         ShowItems(QString());
         ItemChanged(selection);
     }
+}
+
+void MainWindow::Print() {
+    Printer p;
+
+    p.PrepareDocument();
+
+    ui->textComment->setHtml(p.GetString());
 }

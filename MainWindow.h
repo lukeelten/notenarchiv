@@ -43,6 +43,7 @@ public slots:
     void SearchTextChanged(const QString& );
 
     void ItemDelete();
+    void Print();
 
 private:
     Ui::MainWindow *ui;

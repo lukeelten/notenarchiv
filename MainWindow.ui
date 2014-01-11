@@ -131,28 +131,6 @@
         <item row="2" column="1">
          <widget class="QLineEdit" name="textStyle"/>
         </item>
-        <item row="3" column="1">
-         <widget class="QPlainTextEdit" name="textComment">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
@@ -298,6 +276,28 @@
           </column>
          </widget>
         </item>
+        <item row="3" column="1">
+         <widget class="QTextEdit" name="textComment">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
@@ -310,7 +310,7 @@
      <x>0</x>
      <y>0</y>
      <width>805</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuNotenarchiv">
@@ -318,6 +318,7 @@
      <string>Notenarchiv</string>
     </property>
     <addaction name="toolbarNew"/>
+    <addaction name="toolbarPrint"/>
     <addaction name="separator"/>
     <addaction name="toolbarSave"/>
     <addaction name="toolbarDelete"/>
@@ -364,6 +365,7 @@
    <addaction name="toolbarNew"/>
    <addaction name="toolbarSave"/>
    <addaction name="toolbarDelete"/>
+   <addaction name="toolbarPrint"/>
   </widget>
   <action name="menuQuit">
    <property name="icon">
@@ -450,6 +452,21 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="toolbarPrint">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/Icons/Print.png</normaloff>:/icons/Icons/Print.png</iconset>
+   </property>
+   <property name="text">
+    <string>Drucken</string>
+   </property>
+   <property name="toolTip">
+    <string>Notenarchiv ausdrucken</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

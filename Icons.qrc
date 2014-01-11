@@ -9,5 +9,6 @@
         <file alias="search">Icons/Search.png</file>
         <file>Icons/icon.gif</file>
         <file>Icons/icon.ico</file>
+        <file>Icons/Print.png</file>
     </qresource>
 </RCC>
