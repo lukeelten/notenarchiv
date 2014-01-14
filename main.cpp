@@ -2,6 +2,9 @@
 #include <QVariant>
 #include <QString>
 #include <QCommandLineParser>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
 
 #include "MainWindow.h"
 #include "Logfile.h"
@@ -33,6 +36,11 @@ int main(int argc, char *argv[])
     a.setApplicationName("Notenarchiv");
     a.setApplicationDisplayName("Notenarchiv");
     a.setApplicationVersion(GetVersion());
+    
+    QTranslator global_translator;
+    global_translator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath)); // globale Übersetzung laden
+    
+    a.installTranslator(&global_translator);
 
     QCommandLineParser cmd;
     cmd.addHelpOption();
