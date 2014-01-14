@@ -5,16 +5,19 @@
 #include <QSqlTableModel>
 #include <QTextDocument>
 #include <QSqlRecord>
+#include <QDebug>
 
 #include "Printer.h"
 #include "Database.h"
 
 Printer::Printer() : m_printer(new QPrinter), m_model(new QSqlTableModel(0, DB->GetDatabase())), m_doc(new QTextDocument) {
-    html_before = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-            "p, li { white-space: pre-wrap; } .table { border: none; } .table p { text-align: center; } .table span { font-size: 14pt; }"
-            "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">;"
-            "<table class=\"table\"><tr style=\"width:100%;\"><th style=\"width:40%;\"><p><span>Name</span></p></th><th style=\"width: 20%;\"><p><span>Fach-Nr</span></p></th><th style=\"width: 40%;\"><p><span>Komponist</span></p></th></tr>";
+    html_before = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">";
+    html_before += "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">";
+    html_before += "p, li { white-space: pre-wrap; } .table { border: none; } .table p { text-align: center; } .table span { font-size: 14pt; }";
+    html_before += "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">";
+    html_before += "<table class=\"table\"><tr style=\"width:100%;\"><th style=\"width:40%;\"><p><span>Name</span></p></th><th style=\"width: 20%;\">";
+    html_before += "<p><span>Fach-Nr</span></p></th><th style=\"width: 40%;\"><p><span>Komponist</span></p></th></tr>";
+    
     html_row = "<tr><td><p><span>%1</span></p></td><td><p><span>%2</span></p></td><td><p><span>%3</span></p></td></tr>";
 
     html_after = "</table></body></html>";
@@ -57,10 +60,11 @@ void Printer::PrepareTable() {
 }
 
 void Printer::PrepareDocument() {
-    m_text.clear();
-    m_text.append(html_before);
+    m_text = html_before;
 
     int nums = m_model->rowCount();
+    
+    qDebug() << Q_FUNC_INFO << " : " << "Rows:" << nums;
 
     for (int i = 0; i < nums; i++) {
         QSqlRecord rec = m_model->record(i);
