@@ -2,10 +2,14 @@
 #define PRINTER_H
 
 #include <QString>
+#include <QHash>
+
+#include "Eintrag.h"
 
 class QPrinter;
 class QSqlTableModel;
 class QTextDocument;
+class QListWidgetItem;
 
 class Printer
 {
