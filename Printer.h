@@ -27,6 +27,8 @@ public:
 
     QString GetString() const { return m_text; }
 
+    void Print();
+
 //protected:
     void PrepareTable();
     bool PreparePrinter();
