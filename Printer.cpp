@@ -13,14 +13,27 @@
 Printer::Printer() : m_printer(new QPrinter(QPrinter::HighResolution)), m_model(new QSqlTableModel(0, DB->GetDatabase())), m_doc(new QTextDocument) {
     html_before = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">";
     html_before += "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">";
-    html_before += "p, li { white-space: pre-wrap; } .table th { text-align: left; } .table span { font-size: 14pt; }";
-    html_before += "</style></head><body style=\" font-family:'Tahoma'; font-size:14pt; font-weight:400; font-style:normal;\">";
-    html_before += "<table class=\"table\"><tr><td style=\"width:40%;\"><p><span>Name</span></p></td><td style=\"width: 20%;\">";
-    html_before += "<p><span>Fach-Nr</span></p></td><td style=\"width: 40%;\"><p><span>Komponist</span></p></td></tr>";
+    html_before += "p, li { white-space: pre-wrap; }";
+    html_before += "</style></head>";
+    html_before += "<body style=\" font-family:'Tahoma'; font-size:14pt; font-weight:400; font-style:normal;\">";
+    // Tabelle
+    html_before += "<table width=\"100%\" border=\"1\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-color: #000000; border-style: solid;\">";
+    
+    html_before += "<thead><tr>";
+    // Kopf
+    html_before += "<th width=\"40%\" align=\"left\"><p><span>Name</span></p></td>";
+    html_before += "<th width=\"20%\" align=\"left\"><p><span>Fach-Nr</span></p></td>";
+    html_before += "<th width=\"40%\" align=\"left\"><p><span>Komponist</span></p></td>";
+    
+    html_before += "</tr></thead>";
+    
+    // Body
+    html_before += "<tbody>";
     
     html_row = "<tr><td><p><span>%1</span></p></td><td><p><span>%2</span></p></td><td><p><span>%3</span></p></td></tr>";
 
-    html_after = "</table></body></html>";
+    html_after = "</tbody></table>";
+    html_after += "</body></html>";
 
 }
 
