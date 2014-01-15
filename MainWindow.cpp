@@ -417,8 +417,5 @@ void MainWindow::SearchTextChanged(const QString& ) {
 void MainWindow::Print() {
     Printer p;
 
-    p.PrepareTable();
-    p.PrepareDocument();
-
-    ui->textComment->setHtml(p.GetString());
+    p.Print();
 }

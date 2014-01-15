@@ -6,6 +6,7 @@
 #include <QTextDocument>
 #include <QSqlRecord>
 #include <QDebug>
+#include <QTime>
 
 #include "Printer.h"
 #include "Database.h"
@@ -15,14 +16,14 @@ Printer::Printer() : m_printer(new QPrinter(QPrinter::HighResolution)), m_model(
     html_before += "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">";
     html_before += "p, li { white-space: pre-wrap; }";
     html_before += "</style></head>";
-    html_before += "<body style=\" font-family:'Tahoma'; font-size:14pt; font-weight:400; font-style:normal;\">";
+    html_before += "<body style=\" font-family:'Tahoma'; font-size:12pt; font-weight:400; font-style:normal;\">";
     // Tabelle
-    html_before += "<table width=\"100%\" border=\"1\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-color: #000000; border-style: solid;\">";
+    html_before += "<table width=\"100%\" border=\"1\" cellpadding=\"2\" cellspacing=\"0\" style=\"border-color: #000000; border-style: solid;\">";
     
-    html_before += "<thead><tr>";
+    html_before += "<thead><tr style=\"font-size: 14pt;\">";
     // Kopf
     html_before += "<th width=\"40%\" align=\"left\"><p><span>Name</span></p></td>";
-    html_before += "<th width=\"20%\" align=\"left\"><p><span>Fach-Nr</span></p></td>";
+    html_before += "<th width=\"20%\" align=\"center\"><p><span>Fach-Nr</span></p></td>";
     html_before += "<th width=\"40%\" align=\"left\"><p><span>Komponist</span></p></td>";
     
     html_before += "</tr></thead>";
@@ -30,7 +31,7 @@ Printer::Printer() : m_printer(new QPrinter(QPrinter::HighResolution)), m_model(
     // Body
     html_before += "<tbody>";
     
-    html_row = "<tr><td><p><span>%1</span></p></td><td><p><span>%2</span></p></td><td><p><span>%3</span></p></td></tr>";
+    html_row = "<tr><td><p><span>%1</span></p></td><td align=\"center\"><p><span>%2</span></p></td><td><p><span>%3</span></p></td></tr>";
 
     html_after = "</tbody></table>";
     html_after += "</body></html>";
@@ -85,8 +86,6 @@ void Printer::PrepareDocument() {
     m_text = html_before;
 
     int nums = m_model->rowCount();
-    
-    qDebug() << Q_FUNC_INFO << " : " << "Rows:" << nums;
 
     for (int i = 0; i < nums; i++) {
         QSqlRecord rec = m_model->record(i);
@@ -103,8 +102,12 @@ void Printer::Print() {
     if (!PreparePrinter())
         return;
 
+    QTime t = QTime::currentTime();
+
     PrepareTable();
     PrepareDocument();
 
     m_doc->print(m_printer);
+
+    qDebug() << Q_FUNC_INFO << " : " << "Time Elapsed: " << t.elapsed();
 }
