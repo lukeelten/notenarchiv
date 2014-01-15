@@ -107,7 +107,9 @@ void Printer::Print() {
     PrepareTable();
     PrepareDocument();
 
+    qDebug() << Q_FUNC_INFO << " : " << "Time Elapsed: " << t.elapsed();
+
     m_doc->print(m_printer);
 
-    qDebug() << Q_FUNC_INFO << " : " << "Time Elapsed: " << t.elapsed();
+
 }
