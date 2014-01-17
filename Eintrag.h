@@ -5,6 +5,8 @@
 #include <QSqlRecord>
 #include <QVariant>
 
+#include "util.h"
+
 class Eintrag
 {
 public:
@@ -23,19 +25,19 @@ public:
 
     int GetId() const;
 
-    QString GetFach() const { return m_rec.value("fach").toString(); }
+    QString GetFach() const { return util::toString(m_rec.value("fach")); }
     void SetFach(const QString& fach) { m_rec.setValue("fach", fach); m_changed = true; }
 
-    QString GetName() const { return m_rec.value("name").toString(); }
+    QString GetName() const { return util::toString(m_rec.value("name")); }
     void SetName(const QString& name) { m_rec.setValue("name", name); m_changed = true; }
 
-    QString GetWriter() const { return m_rec.value("komponist").toString(); }
+    QString GetWriter() const { return util::toString(m_rec.value("komponist"); }
     void SetWriter(const QString& writer) { m_rec.setValue("komponist", writer); m_changed = true; }
 
-    QString GetStyle() const { return m_rec.value("richtung").toString(); }
+    QString GetStyle() const { return util::toString(m_rec.value("richtung"); }
     void SetStyle(const QString& style) { m_rec.setValue("richtung", style); m_changed = true; }
 
-    QString GetComment() const { return m_rec.value("bemerkung").toString(); }
+    QString GetComment() const { return util::toString(m_rec.value("bemerkung"); }
     void SetComment(const QString& comment) { m_rec.setValue("bemerkung", comment); m_changed = true; }
 
     bool IsChanged() const { return m_changed; }
