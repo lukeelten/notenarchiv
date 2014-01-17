@@ -9,6 +9,7 @@
 #include "MainWindow.h"
 #include "Logfile.h"
 #include "Database.h"
+#include "util.h"
 
 const int VERSION_MAJOR = 1;
 const int VERSION_MINOR = 1;
@@ -20,13 +21,13 @@ constexpr int GetVersionInt() {
 
 QString GetVersion() {
     QString v = "V";
-    v.append(QVariant(VERSION_MAJOR).toString());
+    v.append(util::toString(VERSION_MAJOR);
     v.append(".");
-    v.append(QVariant(VERSION_MINOR).toString());
+    v.append(util::toString(VERSION_MINOR));
     v.append(".");
-    v.append(QVariant(VERSION_PATCHLEVEL).toString());
+    v.append(util::toString(VERSION_PATCHLEVEL));
 
-    return qMove(v);
+    return v;
 }
 
 int main(int argc, char *argv[])
