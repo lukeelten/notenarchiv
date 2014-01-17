@@ -65,9 +65,9 @@ void MainWindow::ShowAbout() {
 void MainWindow::closeEvent(QCloseEvent * event) {
     bool close = false;
 
-    QMessageBox msg;
-    msg.setText("Das Notenarchiv wurde verändert.");
-    msg.setInformativeText("Möchten Sie die Änderungen speichern?");
+    QMessageBox msg (this);
+    msg.setText(tr("Das Notenarchiv wurde verändert."));
+    msg.setInformativeText(tr("Möchten Sie die Änderungen speichern?"));
     msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msg.setIcon(QMessageBox::Question);
 
@@ -82,8 +82,8 @@ void MainWindow::closeEvent(QCloseEvent * event) {
         if (SaveAll()) {
             close = true;
         } else {
-            msg.setText("Es ist ein Fehler beim Speichern aufgetreten.");
-            msg.setInformativeText("Möchten Sie das Programm trotzdem schließen?");
+            msg.setText(tr("Es ist ein Fehler beim Speichern aufgetreten."));
+            msg.setInformativeText(tr("Möchten Sie das Programm trotzdem schließen?"));
             msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
             msg.setIcon(QMessageBox::Critical);
 
@@ -159,24 +159,6 @@ void MainWindow::ItemChanged(QListWidgetItem* item) {
         return;
     }
 
-    // Gehört zum alten Such-Algo
-    /*
-    if (item->isHidden()) {
-        int row = 0;
-
-        while (item->isHidden()) {
-            item = ui->liste->item(row);
-            row++;
-
-            if (row > ui->liste->count() || !item) {
-                ItemChanged();
-                return;
-            }
-        }
-    }
-    */
-
-    // Gehört zum neuen Suchalgo
     if (ui->liste->row(item) < 0)
         item = ui->liste->item(0);
 
@@ -232,24 +214,6 @@ void MainWindow::ShowItems(const QString& filter) {
 
 
     for (QHash<QListWidgetItem*, Eintrag>::iterator i = m_items.begin(); i != m_items.end(); i++) {
-
-        // Alter Such Algo
-        /*
-        i.key()->setHidden(true);
-
-        bool add = false;
-
-        if (!filter.isEmpty()) {
-            QString name = i.value().GetName();
-            if (name.contains(filter, Qt::CaseInsensitive))
-                add = true;
-        } else
-            add = true;
-
-        if (add) {
-            i.key()->setHidden(false);
-        }
-        */
 
         QString name = i.value().GetName();
         if (!name.contains(filter, Qt::CaseInsensitive)) {
@@ -352,10 +316,10 @@ void MainWindow::ChangeItemStyle(QListWidgetItem *item, bool anywhere) {
 }
 
 void MainWindow::Add() {
-    QListWidgetItem* item = new QListWidgetItem("Neuer Eintrag", ui->liste);
+    QListWidgetItem* item = new QListWidgetItem(tr("Neuer Eintrag"), ui->liste);
 
     Eintrag e(m_model->record(0));
-    e.SetName("Neuer Eintrag");
+    e.SetName(tr("Neuer Eintrag"));
 
     m_items.insert(item, e);
 
@@ -367,10 +331,13 @@ void MainWindow::Add() {
 void MainWindow::ItemDelete() {
     QListWidgetItem* current = ui->liste->currentItem();
 
-    QMessageBox msg;
+    QMessageBox msg(this);
     msg.setIcon(QMessageBox::Question);
-    msg.setText("Löschen bestätigen");
-    msg.setInformativeText("Möchten Sie den Eintrag " + m_items[current].GetName() + " wirklich löschen?");
+    msg.setText(tr("Löschen bestätigen"));
+    
+    QString str = tr("Möchten Sie den Eintrag %1 wirklich löschen?");
+    
+    msg.setInformativeText(str.arg(m_items[current].GetName()));
     msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 
     int ret = msg.exec();
@@ -388,17 +355,17 @@ void MainWindow::ItemDelete() {
             if (m_model->lastError().isValid())
                 qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
 
-            QMessageBox::information(this, "Löschen fehlgeschlagen", "Das Löschen des ausgewählten Elements ist fehlgeschlagen.", QMessageBox::Ok, QMessageBox::Ok);
+            QMessageBox::information(this, tr("Löschen fehlgeschlagen"), tr("Das Löschen des ausgewählten Elements ist fehlgeschlagen."), QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
     }
     current->setHidden(true);
 
     m_items.remove(current);
-    ui->liste->removeItemWidget(current);
+    ui->liste->takeItem(ui->liste->row(current));
 
     if(current)
-        delete current; // Bin nicht sicher ob ich das darf
+        delete current;
 }
 
 void MainWindow::SearchClicked() {
