@@ -21,7 +21,7 @@ constexpr int GetVersionInt() {
 
 QString GetVersion() {
     QString v = "V";
-    v.append(util::toString(VERSION_MAJOR);
+    v.append(util::toString(VERSION_MAJOR));
     v.append(".");
     v.append(util::toString(VERSION_MINOR));
     v.append(".");

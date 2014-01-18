@@ -27,12 +27,12 @@ public:
 
     QString GetString() const { return m_text; }
 
-    void Print();
+    void Print(QSqlTableModel* model = nullptr);
 
-//protected:
-    void PrepareTable();
+protected:
     bool PreparePrinter();
-    void PrepareDocument();
+    void PrepareDocument(QSqlTableModel* model);
+    void InitTableModel();
 
 private:
     QPrinter* m_printer;
@@ -40,7 +40,6 @@ private:
     QTextDocument* m_doc;
 
     QString m_text;
-
     QString html_before, html_after, html_row;
 };
 

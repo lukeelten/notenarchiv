@@ -31,13 +31,13 @@ public:
     QString GetName() const { return util::toString(m_rec.value("name")); }
     void SetName(const QString& name) { m_rec.setValue("name", name); m_changed = true; }
 
-    QString GetWriter() const { return util::toString(m_rec.value("komponist"); }
+    QString GetWriter() const { return util::toString(m_rec.value("komponist")); }
     void SetWriter(const QString& writer) { m_rec.setValue("komponist", writer); m_changed = true; }
 
-    QString GetStyle() const { return util::toString(m_rec.value("richtung"); }
+    QString GetStyle() const { return util::toString(m_rec.value("richtung")); }
     void SetStyle(const QString& style) { m_rec.setValue("richtung", style); m_changed = true; }
 
-    QString GetComment() const { return util::toString(m_rec.value("bemerkung"); }
+    QString GetComment() const { return util::toString(m_rec.value("bemerkung")); }
     void SetComment(const QString& comment) { m_rec.setValue("bemerkung", comment); m_changed = true; }
 
     bool IsChanged() const { return m_changed; }

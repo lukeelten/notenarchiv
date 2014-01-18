@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QListWidgetItem>
-#include <QSqlTableModel>
 #include <QHash>
+#include <QMessageBox>
 #include <QDebug>
 
 #include "Eintrag.h"
+
+class QListWidgetItem;
+class QSqlTableModel;
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *);
+    int ShowSaveMessageBox();
     void LoadItems();
     void ChangeItemStyle(QListWidgetItem* item, bool anywhere = false);
     void ShowItems(const QString& filter);

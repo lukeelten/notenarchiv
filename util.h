@@ -5,41 +5,41 @@
 #include <QVariant>
 #include <QByteArray>
 
-// STD includes
-
-
 namespace util {
 
-  QString toString (const QVariant& v) {
+  inline QString toString (const QVariant& v) {
     return v.toString();
   }
-    
-  QString toString (const QByteArray& b) {
-    return b.toUtf8();
+
+  inline QString toString (const QByteArray& b) {
+    return QString(b);
   }
-  
-  QString toString (const int i) {
+
+  inline QString toString (const int i) {
     return QVariant(i).toString();
   }
-  
-  QString toString (const float f) {
+
+  inline QString toString (const float f) {
     return QVariant(f).toString();
   }
-  
-  QString toString (const double d) {
+
+  inline QString toString (const double d) {
     return QVariant(d).toString();
   }
-  
-  QString toString (const bool b) {
+
+  inline QString toString (const bool b) {
     return QVariant(b).toString();
   }
-  
-  
+
+
+  inline QByteArray toByteArray (const QString& str) {
+      return str.toUtf8();
+  }
+
+  inline QByteArray toByteArray (const QVariant& v) {
+      return v.toByteArray();
+  }
 
 }
-
-
-
-
 
 #endif // UTIL_H

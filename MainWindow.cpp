@@ -1,5 +1,6 @@
 #include <QMessageBox>
 #include <QSqlTableModel>
+#include <QListWidgetItem>
 #include <QSqlQuery>
 #include <QModelIndex>
 #include <QSqlRecord>
@@ -62,8 +63,9 @@ void MainWindow::ShowAbout() {
     about.exec();
 }
 
-void MainWindow::closeEvent(QCloseEvent * event) {
-    bool close = false;
+int MainWindow::ShowSaveMessageBox() {
+    if (!m_changed)
+        return QMessageBox::Discard;
 
     QMessageBox msg (this);
     msg.setText(tr("Das Notenarchiv wurde verändert."));
@@ -71,17 +73,18 @@ void MainWindow::closeEvent(QCloseEvent * event) {
     msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msg.setIcon(QMessageBox::Question);
 
-    int ret = QMessageBox::Discard;
+    return msg.exec();
+}
 
-    if (m_changed) {
-        ret = msg.exec();
-    }
+void MainWindow::closeEvent(QCloseEvent * event) {
+    bool close = false;
 
-    switch (ret) {
+    switch (ShowSaveMessageBox()) {
     case QMessageBox::Save:
         if (SaveAll()) {
             close = true;
         } else {
+            QMessageBox msg(this);
             msg.setText(tr("Es ist ein Fehler beim Speichern aufgetreten."));
             msg.setInformativeText(tr("Möchten Sie das Programm trotzdem schließen?"));
             msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -200,7 +203,7 @@ void MainWindow::LoadItems() {
 
         item = new QListWidgetItem(noten.GetName(), ui->liste);
 
-        m_items.insert(item, std::move(noten));
+        m_items.insert(item, qMove(noten));
 
         item = nullptr;
     }
@@ -382,7 +385,23 @@ void MainWindow::SearchTextChanged(const QString& ) {
 }
 
 void MainWindow::Print() {
+    switch (ShowSaveMessageBox()) {
+    case QMessageBox::Discard:
+        // eventuell alle Änderungen verwerfen
+        break;
+
+    case QMessageBox::Save:
+        SaveAll();
+        break;
+
+    case QMessageBox::Cancel:
+        return;
+
+    default:
+        return;
+    }
+
     Printer p;
 
-    p.Print();
+    p.Print(m_model);
 }

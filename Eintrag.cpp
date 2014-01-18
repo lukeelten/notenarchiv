@@ -5,7 +5,7 @@
 #include "Eintrag.h"
 
 Eintrag::Eintrag() : m_changed(false), m_row(-2) {
-    qFatal() << Q_FUNC_INFO << " : " << "call of invalid constructor";
+    qDebug() << Q_FUNC_INFO << " : " << "call of invalid constructor";
 }
 
 Eintrag::Eintrag(const QSqlRecord& empty_rec) : m_rec(empty_rec), m_changed(false), m_row(-1) {

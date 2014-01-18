@@ -32,7 +32,8 @@ HEADERS  += MainWindow.h \
     Eintrag.h \
     FilesDialog.h \
     File.h \
-    Printer.h
+    Printer.h \
+    util.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \

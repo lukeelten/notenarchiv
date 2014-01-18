@@ -11,7 +11,9 @@
 #include "Printer.h"
 #include "Database.h"
 
-Printer::Printer() : m_printer(new QPrinter(QPrinter::HighResolution)), m_model(new QSqlTableModel(0, DB->GetDatabase())), m_doc(new QTextDocument) {
+Printer::Printer() : m_printer(new QPrinter(QPrinter::HighResolution)), m_doc(new QTextDocument) {
+    m_model = nullptr;
+
     html_before = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">";
     html_before += "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">";
     html_before += "p, li { white-space: pre-wrap; }";
@@ -71,24 +73,24 @@ bool Printer::PreparePrinter() {
     return false;
 }
 
-void Printer::PrepareTable() {
+void Printer::InitTableModel() {
+    m_model = new QSqlTableModel(0, DB->GetDatabase());
     m_model->setTable("notenarchiv");
     m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     m_model->setSort(1, Qt::AscendingOrder);
-
     m_model->select();
 
     while (m_model->canFetchMore())
         m_model->fetchMore();
 }
 
-void Printer::PrepareDocument() {
+void Printer::PrepareDocument(QSqlTableModel* model) {
     m_text = html_before;
 
-    int nums = m_model->rowCount();
+    int nums = model->rowCount();
 
     for (int i = 0; i < nums; i++) {
-        QSqlRecord rec = m_model->record(i);
+        QSqlRecord rec = model->record(i);
 
         m_text.append(html_row.arg(rec.value("name").toString(), rec.value("fach").toString(), rec.value("komponist").toString()));
     }
@@ -98,18 +100,16 @@ void Printer::PrepareDocument() {
     m_doc->setHtml(m_text);
 }
 
-void Printer::Print() {
+void Printer::Print(QSqlTableModel* model) {
     if (!PreparePrinter())
         return;
 
-    QTime t = QTime::currentTime();
-
-    PrepareTable();
-    PrepareDocument();
-
-    qDebug() << Q_FUNC_INFO << " : " << "Time Elapsed: " << t.elapsed();
+    if (model)
+        PrepareDocument(model);
+    else {
+        InitTableModel();
+        PrepareDocument(m_model);
+    }
 
     m_doc->print(m_printer);
-
-
 }
