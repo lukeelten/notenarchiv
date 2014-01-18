@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QHash>
-#include <QMessageBox>
 #include <QDebug>
 
 #include "Eintrag.h"
