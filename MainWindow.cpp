@@ -17,6 +17,10 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+/*
+ * TODO: Wenn gespeichert wird, entfällt die aktuelle Auswahl
+ * */
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
