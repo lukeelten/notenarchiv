@@ -118,27 +118,32 @@ bool MainWindow::SaveAll() {
     if (!m_changed)
         return true;
 
-    bool submit = false;
+    bool reload = false;
     for (auto iter = m_items.begin(); iter != m_items.end(); iter++) {
         if (iter.value().IsChanged()) {
-            m_model->setRecord(iter.value().GetRow(), iter.value().GetRecord());
+            if (iter.value().GetRow() >= 0)
+                m_model->setRecord(iter.value().GetRow(), iter.value().GetRecord());
+            else {
+                m_model->insertRecord(-1, iter.value().GetRecord());
+                reload = true;
+            }
+
             iter.value().Saved();
             iter.key()->setText(iter.value().GetName());
             QFont f = iter.key()->font();
             f.setItalic(false);
             iter.key()->setFont(f);
-            submit = true;
         }
     }
 
-    if (submit) {
-        if (!m_model->submitAll()) {
-            if (m_model->lastError().isValid())
-                qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
+    if (!m_model->submitAll()) {
+        if (m_model->lastError().isValid())
+            qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
 
-            return false;
-        }
+        return false;
     }
+    if (reload)
+        LoadItems();
 
     m_changed = false;
     return true;
@@ -321,7 +326,7 @@ void MainWindow::ChangeItemStyle(QListWidgetItem *item, bool anywhere) {
 void MainWindow::Add() {
     QListWidgetItem* item = new QListWidgetItem(tr("Neuer Eintrag"), ui->liste);
 
-    Eintrag e(m_model->record(0));
+    Eintrag e(m_model->record());
     e.SetName(tr("Neuer Eintrag"));
 
     m_items.insert(item, e);
@@ -354,13 +359,15 @@ void MainWindow::ItemDelete() {
     }
 
     if (m_items[current].GetRow() >= 0) {
-        if (!m_model->removeRows(m_items[current].GetRow(), 1)) {
+        qDebug() << "Try to remove";
+        if (!m_model->removeRow(m_items[current].GetRow())) {
             if (m_model->lastError().isValid())
                 qDebug() << Q_FUNC_INFO << " : " << m_model->lastError();
 
             QMessageBox::information(this, tr("Löschen fehlgeschlagen"), tr("Das Löschen des ausgewählten Elements ist fehlgeschlagen."), QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
+        m_changed = true;
     }
     current->setHidden(true);
 
