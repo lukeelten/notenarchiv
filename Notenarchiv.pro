@@ -6,13 +6,13 @@
 
 QT       += core gui sql printsupport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = Notenarchiv
 TEMPLATE = app
 
-CONFIG += c++11
-
+#CONFIG += c++14
+QMAKE_CXXFLAGS += -std=c++14
 
 SOURCES += main.cpp\
         MainWindow.cpp \
